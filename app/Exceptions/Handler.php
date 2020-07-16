@@ -2,7 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\ApiCode;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -39,6 +42,7 @@ class Handler extends ExceptionHandler
         parent::report($exception);
     }
 
+
     /**
      * Render an exception into an HTTP response.
      *
@@ -50,6 +54,18 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof ValidationException) {
+            return $this->respondWithValidationError($exception);
+        }
+
         return parent::render($request, $exception);
+    }
+
+    private function respondWithValidationError($exception)
+    {
+        return ResponseBuilder::asError(ApiCode::VALIDATION_ERROR)
+            ->withData($exception->errors())
+            ->withHttpCode(422)
+            ->build();
     }
 }

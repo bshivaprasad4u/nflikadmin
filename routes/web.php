@@ -20,6 +20,8 @@ Route::get('/', function () {
 
 
 //Route::get('/home', 'HomeController@index')->name('home');
+Route::view('forgot_password', 'auth.passwords.reset')->name('password.reset');
+
 
 // admin routes
 Route::group(['prefix' => 'admin'], function () {
@@ -56,17 +58,17 @@ Route::group(['prefix' => 'client'], function () {
     Route::post('login', 'Client\Auth\LoginController@login');
     Route::post('logout', 'Client\Auth\LoginController@logout')->name('client.logout');
     // Password reset routes
-    Route::post('/password/email', 'Client\Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+    Route::post('/password/email', 'Client\Auth\ForgotPasswordController@sendResetLinkEmail')->name('client.password.email');
     Route::get('/password/reset', 'Client\Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
     Route::post('/password/reset', 'Client\Auth\ResetPasswordController@reset');
-    Route::get('/password/reset/{token}', 'Client\Auth\ResetPasswordController@showResetForm')->name('password.reset');
+    Route::get('/password/reset/{token}', 'Client\Auth\ResetPasswordController@showResetForm')->name('client.password.reset');
     // verification routes
-    Route::get('/verification/verify', 'Client\Auth\VerificationController@show')->name('client.verification.notice');
-    Route::get('/verification/verify/{id}/{hash}', 'Client\Auth\VerificationController@verify')->name('verification.verify');
-    Route::post('/verification/resend', 'Client\Auth\VerificationController@resend')->name('client.verification.resend');
+    Route::get('/email/verify', 'Client\Auth\VerificationController@show')->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', 'Client\Auth\VerificationController@verify')->name('verification.verify')->middleware('auth:client');
+    Route::post('/email/resend', 'Client\Auth\VerificationController@resend')->name('verification.resend')->middleware('auth:client');
 
 
-    Route::get('dashboard', 'Client\ClientController@dashboard')->name('client.dashboard')->middleware('verified:client.verification.notice');
+    Route::get('dashboard', 'Client\ClientController@dashboard')->name('client.dashboard')->middleware('verified:verification.notice');
 
 
     Route::get('clients', 'AgentController@index')->name('client.agents.index');

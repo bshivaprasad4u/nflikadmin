@@ -18,6 +18,7 @@ class ClientEmailIsVerified extends EnsureEmailIsVerified
      */
     public function handle($request, Closure $next, $redirectToRoute = null)
     {
+        /*
         $guards = array_keys(config('auth.guards'));
         foreach($guards as $guard) {
             if ($guard == 'client') {
@@ -26,24 +27,34 @@ class ClientEmailIsVerified extends EnsureEmailIsVerified
             ! $request->user()->hasVerifiedEmail())) {
             return $request->expectsJson()
                     ? abort(403, 'Your email address is not verified.')
-                    : Redirect::route($redirectToRoute ?: 'client.verification.notice');
+                    : Redirect::route($redirectToRoute ?: 'verification.notice');
             }else if($guard =='agent'){
                 if (! $request->user() ||
                 ($request->user() instanceof MustVerifyEmail &&
                 ! $request->user()->hasVerifiedEmail())) {
                 return $request->expectsJson()
                         ? abort(403, 'Your email address is not verified.')
-                        : Redirect::route($redirectToRoute ?: 'agent.verification.notice');
-            }else{
+                        : Redirect::route($redirectToRoute ?: 'verification.notice');
+            }else if($guard =='api'){{
                 if (! $request->user() ||
                 ($request->user() instanceof MustVerifyEmail &&
                 ! $request->user()->hasVerifiedEmail())) {
                 return $request->expectsJson()
                         ? abort(403, 'Your email address is not verified.')
                         : Redirect::route($redirectToRoute ?: 'verification.notice');
-            }
-            }
-        
+            }else{
+
+            }*/
+        if (
+            !$request->user() ||
+            ($request->user() instanceof MustVerifyEmail &&
+                !$request->user()->hasVerifiedEmail())
+        ) {
+            return $request->expectsJson()
+                ? abort(403, 'Your email address is not verified.')
+                : Redirect::route($redirectToRoute ?: 'verification.notice');
+        }
+
 
         return $next($request);
     }

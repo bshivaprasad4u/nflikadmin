@@ -17,3 +17,21 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group([
+    'prefix' => 'v1',
+    'middleware' => ['api'],
+    'namespace' => 'Api\V1'
+
+], function ($router) {
+    Route::post('login', 'AuthController@login');
+    Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh')->middleware('auth:api');
+    Route::get('me', 'AuthController@me')->middleware('auth:api');
+
+    Route::post('register', 'RegistrationController@register');
+    Route::get('verification/verify/{id}', 'VerificationController@verify')->name('api.v1.verification.verify');
+    Route::get('verification/resend', 'VerificationController@resend')->name('verification.resend')->middleware('auth:api');
+    Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail');
+    Route::post('password/reset', 'ForgotPasswordController@reset')->name('api.v1.password.reset');
+});
