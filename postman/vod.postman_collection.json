@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "b4b21718-cb13-4419-beaf-fe3e0ac27591",
+		"name": "vod",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "authentication",
+			"item": [
+				{
+					"name": "localhost/api/v1/login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "shiva@nflik.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "shiva@1234",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/api/v1/login",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost/api/v1/me",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL2FwaVwvdjFcL2xvZ2luIiwiaWF0IjoxNTk0NzM1MTQ2LCJleHAiOjE1OTQ3Mzg3NDYsIm5iZiI6MTU5NDczNTE0NiwianRpIjoibTlWV2tnaWw1Zk8zU0dQRyIsInN1YiI6MywicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.feLGnKDwFW7C3E356a3aBaLJbBN0zo8JYX1H4lIcV_s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost/api/v1/me",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost/api/v1/verification/resend",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL2FwaVwvdjFcL2xvZ2luIiwiaWF0IjoxNTk0NzU5MDcyLCJleHAiOjE1OTQ3NjI2NzIsIm5iZiI6MTU5NDc1OTA3MiwianRpIjoiYXNRQWRibUUyTmo2RmdVOCIsInN1YiI6NSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.N_bFiry-pLwt74ih_g4UR4xcj7_PHL5TQBOolyqdk0Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost/api/v1/verification/resend",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								"verification",
+								"resend"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost/api/v1/password/email",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL2FwaVwvdjFcL2xvZ2luIiwiaWF0IjoxNTk0NzQ1MDk3LCJleHAiOjE1OTQ3NDg2OTcsIm5iZiI6MTU5NDc0NTA5NywianRpIjoieVdNNk9NQ2d0UlJmcGo1RSIsInN1YiI6MSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.ZvvxpeSMufCcBL0L2YeUPwCnLpj50RFRaGAGQ0mcb_Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "shiva@nflik.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/api/v1/password/email",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								"password",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost/api/v1/password/reset?token=0839b9f850b4211c09bf07158d1ba57b1faf28535cb28d4217ad437558777cb4&email=shiva@nflik.com&password=shiva@1234&password_confirmation=shiva@1234",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost/api/v1/password/reset?token=0839b9f850b4211c09bf07158d1ba57b1faf28535cb28d4217ad437558777cb4&email=shiva@nflik.com&password=shiva@1234&password_confirmation=shiva@1234",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								"password",
+								"reset"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "0839b9f850b4211c09bf07158d1ba57b1faf28535cb28d4217ad437558777cb4"
+								},
+								{
+									"key": "email",
+									"value": "shiva@nflik.com"
+								},
+								{
+									"key": "password",
+									"value": "shiva@1234"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "shiva@1234"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost/api/v1/register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "shiva",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "shiva@nflik.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "shiva@123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/api/v1/register",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"v1",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
