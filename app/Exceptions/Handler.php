@@ -6,6 +6,8 @@ use App\ApiCode;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
+use Illuminate\Support\Arr;
+use Illuminate\Auth\AuthenticationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -52,13 +54,29 @@ class Handler extends ExceptionHandler
      *
      * @throws \Throwable
      */
-    public function render($request, Throwable $exception)
+
+
+    public function render($request, Throwable $e)
     {
-        if ($exception instanceof ValidationException) {
-            return $this->respondWithValidationError($exception);
+        if (method_exists($e, 'render') && $response = $e->render($request)) {
+            return Router::toResponse($request, $response);
+        } elseif ($e instanceof Responsable) {
+            return $e->toResponse($request);
         }
 
-        return parent::render($request, $exception);
+        $e = $this->prepareException($e);
+
+        if ($e instanceof HttpResponseException) {
+            return $e->getResponse();
+        } elseif ($e instanceof AuthenticationException) {
+            return $this->unauthenticated($request, $e);
+        } elseif ($e instanceof ValidationException) {
+            return $this->convertValidationExceptionToResponse($e, $request);
+        }
+
+        return $request->expectsJson()
+            ? $this->respondWithValidationError($request, $e)
+            : $this->prepareResponse($request, $e);
     }
 
     private function respondWithValidationError($exception)
@@ -67,5 +85,33 @@ class Handler extends ExceptionHandler
             ->withData($exception->errors())
             ->withHttpCode(422)
             ->build();
+    }
+
+    /**
+     * Convert an authentication exception into a response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $exception->getMessage()], 401);
+        }
+        $guard = Arr::get($exception->guards(), 0);
+        switch ($guard) {
+            case 'admin':
+                $login = 'admin.login';
+                break;
+            case 'client':
+                $login = 'client.login';
+                break;
+            default:
+                $login = 'login';
+                break;
+        }
+
+        return redirect()->guest($exception->redirectTo() ?? route($login));
     }
 }

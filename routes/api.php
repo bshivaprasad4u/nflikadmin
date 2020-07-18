@@ -24,12 +24,12 @@ Route::group([
     'namespace' => 'Api\V1'
 
 ], function ($router) {
-    Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
+    Route::post('login', 'AuthController@login')->name('api.v1.login');
+    Route::post('logout', 'AuthController@logout')->name('api.v1.logout');
     Route::post('refresh', 'AuthController@refresh')->middleware('auth:api');
     Route::get('me', 'AuthController@me')->middleware('auth:api');
 
-    Route::post('register', 'RegistrationController@register');
+    Route::post('register', 'RegistrationController@register')->name('api.v1.register');
     Route::get('verification/verify/{id}', 'VerificationController@verify')->name('api.v1.verification.verify');
     Route::get('verification/resend', 'VerificationController@resend')->name('verification.resend')->middleware('auth:api');
     Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail');
