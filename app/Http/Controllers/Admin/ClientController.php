@@ -33,6 +33,7 @@ class ClientController extends Controller
      */
     public function index()
     {
+        $data['page_title'] = 'Clients';
         $data['clients'] = Client::all()->sortByDesc('created_at');
         return view('admin.client.index', $data);
     }
@@ -44,7 +45,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-
+        $data['page_title'] = 'Clients';
         $data['subscriptions'] = Subscription::all()->sortBy('name');
         return view('admin.client.create', $data);
     }
@@ -57,6 +58,7 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
+        $data['page_title'] = 'Clients';
 
         $validationData = $request->validate(
             [

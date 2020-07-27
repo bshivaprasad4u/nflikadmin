@@ -21,10 +21,11 @@ class CreateClientsTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('status', ['active', 'inactive']);
-            $table->unsignedBigInteger('subscription_id');
+            //$table->unsignedBigInteger('subscription_id');
+            $table->foreignId('subscription_id')->constrained()->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
-            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
+            // $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
         });
     }
 

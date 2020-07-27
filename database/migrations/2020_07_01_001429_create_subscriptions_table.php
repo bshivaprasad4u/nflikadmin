@@ -16,8 +16,8 @@ class CreateSubscriptionsTable extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slots');
-            $table->string('agents');
+            $table->string('slots')->nullable();
+            $table->string('agents')->nullable();
             $table->enum('status', ['active', 'inactive']);
             $table->timestamps();
         });

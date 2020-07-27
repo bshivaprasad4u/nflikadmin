@@ -31,6 +31,7 @@
 
   <!-- REQUIRED SCRIPTS -->
   @include('adminlte.includes.foot')
+  @yield('script')
 </body>
 
 </html>

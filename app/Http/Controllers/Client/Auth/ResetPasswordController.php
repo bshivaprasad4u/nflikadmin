@@ -5,9 +5,25 @@ namespace App\Http\Controllers\Client\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class ResetPasswordController extends Controller
 {
+    protected function guard() // And now finally this is our custom guard name
+    {
+        return Auth::guard('client');
+    }
+    /**
+     * password broker for admin guard.
+     * 
+     * @return \Illuminate\Contracts\Auth\PasswordBroker
+     */
+    public function broker()
+    {
+        return Password::broker('client');
+    }
     /*
     |--------------------------------------------------------------------------
     | Password Reset Controller
@@ -27,4 +43,10 @@ class ResetPasswordController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::CLIENT;
+    public function showResetForm(Request $request, $token = null)
+    {
+        return view('client.auth.passwords.reset')->with(
+            ['token' => $token, 'email' => $request->email]
+        );
+    }
 }

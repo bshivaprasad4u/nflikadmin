@@ -26,6 +26,8 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $data['page_title'] = 'Dashboard';
+        $data['bread_crum'] =  '';
+        return view('admin.dashboard', $data);
     }
 }

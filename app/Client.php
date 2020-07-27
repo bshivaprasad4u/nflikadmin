@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\ClientPasswordReset;
 
 class Client extends Authenticatable implements MustVerifyEmail
 {
@@ -42,5 +43,10 @@ class Client extends Authenticatable implements MustVerifyEmail
     function agents()
     {
         $this->belongsToMany(Agent::class);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ClientPasswordReset($token));
     }
 }

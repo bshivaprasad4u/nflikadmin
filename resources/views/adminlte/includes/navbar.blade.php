@@ -79,7 +79,7 @@
                           @csrf
                       </form>
                       @else
-                      <a href="{{ route('logout') }}" onclick="event.preventDefault();
+                      <a href="{{ route('admin.logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();" class="btn btn-default btn-flat float-right">Sign out</a>
                       <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                           @csrf

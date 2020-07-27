@@ -8,10 +8,10 @@
   <!-- overlayScrollbars -->
   <script src="{{asset('adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
   <!-- AdminLTE App -->
-  <script src="{{asset('adminlte/dist/js/adminlte.js')}}"></script>
+  <script src="{{asset('adminlte/js/adminlte.js')}}"></script>
 
   <!-- OPTIONAL SCRIPTS -->
-  <script src="{{asset('adminlte/dist/js/demo.js')}}"></script>
+  <script src="{{asset('adminlte/js/demo.js')}}"></script>
 
   <!-- PAGE PLUGINS -->
   <!-- jQuery Mapael -->
