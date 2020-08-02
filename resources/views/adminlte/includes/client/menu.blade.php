@@ -1,23 +1,34 @@
-<!--<li class="nav-item has-treeview">
+@can('view_agents')
+<li class="nav-item has-treeview">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-user"></i>
         <p>Agents<i class="right fas fa-angle-left"></i></p>
     </a>
-     <ul class="nav nav-treeview">
+    <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{{ route('admin.clients.index')}}" class="nav-link">
+            <a href="{{ route('client.agents.index')}}" class="nav-link">
                 <i class="nav-icon fas fa-user fa-ad"></i>
-                <p>View Clients</p>
+                <p>View Agents</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('admin.clients.create')}}" class="nav-link">
+            <a href="{{ route('client.agents.create')}}" class="nav-link">
                 <i class="nav-icon fas fa-user fa-ad"></i>
-                <p>Add Client</p>
+                <p>Add Agent</p>
             </a>
         </li>
-    </ul> 
-</li>-->
+    </ul>
+</li>
+@endcan
+@can('view_channels')
+<li class="nav-item">
+    <a href="{{ route('client.channel.view')}}" class="nav-link">
+        <i class="nav-icon fas fa-user fa-ad"></i>
+        <p>Channel Page</p>
+    </a>
+</li>
+@endcan
+
 <li class="nav-item has-treeview {!! Request::is('client/contents/*') ? 'active' : '' !!}">
     <a href="#" class="nav-link ">
         <i class="nav-icon fas fa-video"></i>

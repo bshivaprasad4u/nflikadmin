@@ -71,12 +71,28 @@ Route::group(['prefix' => 'client',  'namespace' => 'Client'], function () {
         Route::get('contents', 'ContentController@index')->name('client.contents.index');
         Route::get('contents/create', 'ContentController@create')->name('client.contents.create');
         Route::post('contents/store', 'ContentController@store')->name('client.contents.store');
+        Route::get('contents/edit/{id}', 'ContentController@edit')->name('client.contents.edit');
+        Route::post('contents/update/{id}', 'ContentController@update')->name('client.contents.update');
         Route::get('contents/view/{id}', 'ContentController@view')->name('client.contents.view');
+        Route::get('contents/video_add/{id}', 'ContentController@video_add')->name('client.contents.video_add');
+        Route::post('contents/video_store/{id}', 'ContentController@video_store')->name('client.contents.video_store');
         Route::get('contents/change_privacy/{id}', 'ContentController@change_privacy')->name('client.contents.change_privacy');
         Route::post('contents/change_privacy/{id}', 'ContentController@privacy_store')->name('client.contents.privacy_store');
         Route::get('contents/teaseradd/{id}', 'ContentController@teaser_add')->name('client.contents.teaser_add');
         Route::post('contents/teaseradd/{id}', 'ContentController@teaser_store')->name('client.contents.teaser_store');
         Route::get('contents/posteradd/{id}', 'ContentController@poster_add')->name('client.contents.poster_add');
         Route::post('contents/posteradd/{id}', 'ContentController@poster_store')->name('client.contents.poster_store');
+        Route::get('contents/monetizeadd/{id}', 'ContentController@monetize_add')->name('client.contents.monetize_add');
+        Route::post('contents/monetizeadd/{id}', 'ContentController@monetize_store')->name('client.contents.monetize_store');
+        Route::get('contents/monetizeupdate/{id}', 'ContentController@monetize_edit')->name('client.contents.monetize_edit');
+        Route::post('contents/monetizeupdate/{id}', 'ContentController@monetize_update')->name('client.contents.monetize_update');
+
+        Route::get('channel/edit/{id}', 'ChannelController@edit')->name('client.channel.edit');
+        Route::post('contents/update/{id}', 'ChannelController@update')->name('client.channel.update');
+        Route::get('channel/view', 'ChannelController@view')->name('client.channel.view');
+        /////// Agents Routes
+        Route::get('agents', 'AgentController@index')->name('client.agents.index');
+        Route::get('agents/create', 'AgentController@create')->name('client.agents.create');
+        Route::post('agents/store', 'AgentController@store')->name('client.agents.store');
     });
 });

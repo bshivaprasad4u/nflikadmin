@@ -14,6 +14,7 @@
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
       @include('adminlte.includes.pageheader')
+      @include('adminlte.includes.error_messages')
       <!-- /.content-header -->
 
       <!-- Main content -->

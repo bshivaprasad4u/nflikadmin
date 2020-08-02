@@ -23,6 +23,7 @@ class CreateContentsTable extends Migration
             $table->string('banner_image');
             $table->string('content_link')->nullable();
             $table->string('format')->nullable();
+            $table->string('duration')->nullable();
             $table->unsignedBigInteger('client_id');
             $table->enum('status', ['active', 'inactive']);
             $table->enum('publish', ['no', 'yes']);
@@ -31,11 +32,16 @@ class CreateContentsTable extends Migration
             $table->string('genres');
             $table->json('tags')->nullable();
             $table->json('display_tags')->nullable();
-            $table->enum('privacy', ['no', 'yes']);
-            $table->json('privacy_parameters')->nullable();
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
+            $table->json('privacy_settings')->nullable();
             $table->enum('go_live_status', ['no', 'yes']);
             $table->dateTime('go_live_date')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+            $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
+            $table->foreign('created_by')->references('id')->on('clients')->onDelete('cascade');
+            $table->foreign('updated_by')->references('id')->on('clients')->onDelete('cascade');
         });
     }
 

@@ -14,6 +14,9 @@ class Settings
     public const COUNTRIES = [
         'INDIA', 'AFRICA', 'CHINA', 'PAKISTAN', 'SRI LANKA', 'BANGLADESH'
     ];
+    public const CURRENCIES = [
+        'INR', 'USD', 'GBP', 'JPY', 'CAD'
+    ];
 
     static public function getDuration($full_video_path)
     {

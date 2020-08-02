@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <section class="content">
-    <div class="card">
+    <div class="card card-info">
         <div class="card-header">
             <h3 class="card-title">{{ $page_title ?? ''}}</h3>
 
@@ -27,7 +27,6 @@
                     </thead>
                     <tbody>
 
-                        @if($contents)
                         @foreach($contents as $content)
                         <tr>
                             <td>{{ $content->name }}</td>
@@ -78,12 +77,9 @@
 
                             </td>
                         </tr>
+
                         @endforeach
-                        <!-- @else
-                                <tr>
-                                    <td colspan="4" align="center"> No Records Found</td>
-                                </tr>
-                                @endif -->
+
                     </tbody>
                 </table>
 
@@ -93,7 +89,7 @@
 </section>
 
 @endsection
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+@section('script')
 <script>
     $(function() {
         $('#example2').DataTable({
@@ -101,6 +97,7 @@
             "lengthChange": false,
             "searching": true,
             "ordering": true,
+            "order": [],
             "columns": [
                 null,
                 null,
@@ -135,3 +132,4 @@
         });
     });
 </script>
+@endsection

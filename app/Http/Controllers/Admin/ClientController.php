@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Client;
+use App\ClientsSubscriptions;
+use App\Channel;
 
 class ClientController extends Controller
 {
@@ -34,7 +36,7 @@ class ClientController extends Controller
     public function index()
     {
         $data['page_title'] = 'Clients';
-        $data['clients'] = Client::all()->sortByDesc('created_at');
+        $data['clients'] = Client::all()->whereNull('parent_id')->sortByDesc('created_at');
         return view('admin.client.index', $data);
     }
 
@@ -68,8 +70,19 @@ class ClientController extends Controller
                 'subscription' => ['required']
             ]
         );
-        $save_data = ['name' => $request->name, 'email' => $request->email, 'phone' => $request->phone, 'subscription_id' => $request->subscription, 'password' => Hash::make($request->phone)];
-        $client = Client::create($save_data)->sendEmailVerificationNotification();;
+        $save_data = ['name' => $request->name, 'email' => $request->email, 'phone' => $request->phone, 'password' => Hash::make($request->phone)];
+        $client = Client::create($save_data);
+        ClientsSubscriptions::create(
+            [
+                'client_id' => $client->id,
+                'subscription_id' => $request->subscription,
+            ]
+        );
+        Channel::create([
+            'client_id' => $client->id,
+        ]);
+        $client->sendEmailVerificationNotification();
+
         if ($client) {
             return redirect('admin/clients')->with('success', "Client Added Successfully.");
         } else {

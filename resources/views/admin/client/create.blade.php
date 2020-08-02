@@ -1,20 +1,21 @@
 @extends('layouts.app')
 @section('content')
 <section class="content">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Add Client</h3>
+    <form method="post" class="form-horizontal" action="{{route('admin.clients.store')}}">
+        @method('POST')
+        @csrf
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title">Add Client</h3>
 
-            <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                    <i class="fas fa-minus"></i></button>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                        <i class="fas fa-minus"></i></button>
 
+                </div>
             </div>
-        </div>
-        <form method="post" class="form-horizontal" action="{{route('admin.clients.store')}}">
             <div class="card-body">
-                @method('POST')
-                @csrf
+
                 <div class="form-group row">
                     <label class="col-form-label col-sm-4" for="">Name</label>
                     <div class="col-sm-8">
@@ -59,9 +60,8 @@
             <div class="card-footer">
                 <button class="btn btn-primary float-right" type="submit"> Submit</button>
             </div>
-        </form>
 
-    </div>
-    </div>
+        </div>
+    </form>
 </section>
 @endsection

@@ -1,17 +1,18 @@
 @extends('layouts.app')
 @section('content')
 <section class="content">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Add Content</h3>
+    <form method="post" class="form-horizontal" action="{{route('client.contents.store')}}" enctype="multipart/form-data">
 
-            <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                    <i class="fas fa-minus"></i></button>
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title">Add Content</h3>
 
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                        <i class="fas fa-minus"></i></button>
+
+                </div>
             </div>
-        </div>
-        <form method="post" class="form-horizontal" action="{{route('client.contents.store')}}" enctype="multipart/form-data">
             <div class="card-body">
                 @method('POST')
                 @csrf
@@ -36,7 +37,7 @@
                         @enderror
                     </div>
                 </div>
-                <div class="form-group row">
+                <!-- <div class="form-group row">
                     <label class="col-form-label col-sm-4" for="">Video File</label>
                     <div class="col-sm-8">
                         <input class="form-control" name="videofile" placeholder="Select Video" type="file">
@@ -44,11 +45,16 @@
                         <div class="alert-custome">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
+                </div> -->
                 <div class="form-group row required">
                     <label class="col-form-label col-sm-4" for="">Banner Image</label>
                     <div class="col-sm-8">
-                        <input class="form-control" name="file" placeholder="Select File" type="file">
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="banner_image" name="file" type="file">
+                                <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                            </div>
+                        </div>
                         @error('file')
                         <div class="alert-custome">{{ $message }}</div>
                         @enderror
@@ -57,7 +63,9 @@
                 <div class="form-group row required">
                     <label class="col-form-label col-sm-4" for=""> Language</label>
                     <div class="col-sm-8">
+                        <?php sort($languages); ?>
                         <select class="form-control" name="language">
+
                             @foreach($languages as $language):
                             <option value="{{$language}}">
                                 {{ ucfirst($language) }}
@@ -70,6 +78,7 @@
                     <label class="col-form-label col-sm-4" for=""> Genres</label>
                     <div class="col-sm-8">
                         <select class="form-control" name="genres">
+                            <?php sort($genres); ?>
                             @foreach($genres as $genre):
                             <option value="{{$genre}}">
                                 {{ ucfirst($genre) }}
@@ -78,7 +87,24 @@
                         </select>
                     </div>
                 </div>
-
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4" for="">Tags</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" placeholder="Enter , seperated Tags" type="text" name="tags" value="{{ old('tags') }}" data-role="tagsinput">
+                        @error('tags')
+                        <div class="alert-custome">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4" for="">Display Tags</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" placeholder="Enter , seperated Display Tags" type="text" name="display_tags" value="{{ old('display_tags') }}">
+                        @error('display_tags')
+                        <div class="alert-custome">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
 
                 <div class="form-group row">
                     <label class="col-form-label col-sm-4" for="">Artist</label>
@@ -101,7 +127,7 @@
                 <div class="form-group row">
                     <label class="col-form-label col-sm-4" for=""> Description</label>
                     <div class="col-sm-8">
-                        <input class="form-control" placeholder="Enter Short Description" type="text" name="description" value="{{ old('description') }}">
+                        <textarea class="form-control" rows="3" name="description" placeholder="Enter Description here....">{{ old('description') }}</textarea>
                         @error('description')
                         <div class="alert-custome">{{ $message }}</div>
                         @enderror
@@ -112,9 +138,21 @@
             <div class="card-footer">
                 <button class="btn btn-primary float-right" type="submit"> Submit</button>
             </div>
-        </form>
-
-    </div>
-    </div>
+        </div>
+    </form>
 </section>
+@endsection
+@section('script')
+<script src="{{ asset('adminlte/plugins/typehead.js/dist/bootstrap-tagsinput.min.js') }}"></script>
+<script>
+    $(function() {
+
+        $('#banner_image').on('change', function(e) {
+            //get the file name
+            var fileName = e.target.files[0].name;
+            //replace the "Choose a file" label
+            $(this).next('.custom-file-label').html(fileName);
+        });
+    });
+</script>
 @endsection

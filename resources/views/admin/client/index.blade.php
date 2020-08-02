@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <section class="content">
-    <div class="card">
+    <div class="card card-info">
         <div class="card-header">
             <h3 class="card-title">{{ $page_title ?? ''}}</h3>
 
@@ -28,6 +28,7 @@
 
                         @if($clients)
                         @foreach($clients as $client)
+
                         <tr>
                             <td>{{ $client->name }}</td>
                             <td>{{ $client->email }}</td>

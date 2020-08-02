@@ -19,9 +19,9 @@ class CreateBlogsTable extends Migration
             $table->text('description');
             $table->string('tags');
             $table->enum('status', ['active', 'inactive']);
-            //$table->unsignedBigInteger('content_id');
-            $table->timestamps();
             $table->foreignId('content_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

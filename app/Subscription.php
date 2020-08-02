@@ -17,6 +17,6 @@ class Subscription extends Model
     ];
     function clients()
     {
-        $this->belongsToMany(Client::class);
+        $this->belongsToMany(Client::class)->whereNull('parent_id');
     }
 }

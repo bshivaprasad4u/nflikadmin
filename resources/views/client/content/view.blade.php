@@ -1,11 +1,12 @@
 @extends('layouts.app')
 @section('content')
 <section class="content">
-    <div class="card">
+    <div class="card card-info">
         <div class="card-header">
             <h3 class="card-title">View Content</h3>
 
             <div class="card-tools">
+                <a href="{{ route('client.contents.edit',$content->id)}}">Edit</a>
                 <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
                     <i class="fas fa-minus"></i></button>
 
@@ -22,12 +23,6 @@
                 <label class="col-form-label col-sm-4" for="">Name</label>
                 <div class="col-sm-8">
                     {{ $content->name}}
-                </div>
-            </div>
-            <div class="row">
-                <label class="col-form-label col-sm-4" for="">Video File</label>
-                <div class="col-sm-8">
-                    {{ $content->content_link}}
                 </div>
             </div>
             <div class="row">
@@ -68,14 +63,54 @@
                     {{ $content->description}}
                 </div>
             </div>
+            <div class="row">
+                <label class="col-form-label col-sm-4" for=""> Tags</label>
+                <div class="col-sm-8">
+
+                    <?php $tags = ($content->tags) ? implode(',', json_decode($content->tags)) : 'No Tags Available';
+                    ?>
+                    {{ $tags}}
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-form-label col-sm-4" for="">Display Tags</label>
+                <div class="col-sm-8">
+                    <?php $display_tags = ($content->display_tags) ? implode(',', json_decode($content->display_tags)) : 'No Tags Available';
+                    ?>
+                    {{ $display_tags}}
+                </div>
+            </div>
 
         </div>
-        <div class="card-footer">
 
-        </div>
     </div>
+    <!--------- Video Upload start ----->
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">Video File</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fas fa-minus"></i></button>
+
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            @if($content->content_link == '')
+            @include('client.content.video_add')
+            @else
+            {{ $content->content_link}}
+            @endif
+        </div>
+
+
+
+    </div>
+    <!--------- Vide upload end ------>
     <!----- settings section start ----->
-    <div class="card">
+    <div class="card card-info">
         <div class="card-header">
             <h3 class="card-title">Privacy Settings</h3>
 
@@ -88,7 +123,7 @@
         </div>
 
         <div class="card-body">
-            @if($content->privacy == 'no')
+            @if(is_null($content->privacy_settings))
             <div class="row">
                 <label class="col-form-label col-sm-4" for="">
                     No Privacy Settings
@@ -96,7 +131,7 @@
 
             </div>
             @else
-            <?php $privacy_settings = json_decode($content->privacy_parameters); ?>
+            <?php $privacy_settings = json_decode($content->privacy_settings); ?>
             @foreach($privacy_settings as $key => $val)
             <div class="row">
                 <label class="col-form-label col-sm-4" for="">
@@ -118,7 +153,7 @@
     </div>
     <!----- settings section end --->
     <!----- Teasers section start ----->
-    <div class="card">
+    <div class="card card-info">
         <div class="card-header">
             <h3 class="card-title">Teasers</h3>
 
@@ -161,7 +196,7 @@
     </div>
     <!------- Teasers  section end ---->
     <!------- Poster section start --->
-    <div class="card">
+    <div class="card card-info">
         <div class="card-header">
             <h3 class="card-title">Posters</h3>
 
@@ -192,7 +227,7 @@
             @empty
             <div class="row">
                 <label class="col-form-label col-sm-4" for="">
-                    No Poster
+                    No Posters
                 </label>
 
             </div>
@@ -203,6 +238,67 @@
 
     </div>
     <!------- Poster section end --->
+    <!------- Monetize section start ---->
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">Monetize</h3>
+
+            <div class="card-tools">
+                @if($content->monetize == 'no')
+                <a href="{{ route('client.contents.monetize_add',$content->id)}}">Monetize</a>
+                @else
+                <a href="{{ route('client.contents.monetize_edit',$content->contentmonetize->id)}}">Change Price</a>
+                @endif
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fas fa-minus"></i></button>
+
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            @if($content->monetize == 'yes')
+
+            <div class="row">
+                <label class="col-form-label col-sm-4" for="">
+                    Price
+                </label>
+                <div class="col-sm-8">
+                    {{ $content->contentmonetize->price }}
+                </div>
+
+            </div>
+            <div class="row">
+                <label class="col-form-label col-sm-4" for="">
+                    Currencty
+                </label>
+                <div class="col-sm-8">
+                    {{ $content->contentmonetize->currency }}
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-form-label col-sm-4" for="">
+                    Gift Coupon
+                </label>
+                <div class="col-sm-8">
+                    {{ $content->contentmonetize->giftcoupon_image }}
+                </div>
+
+            </div>
+            @else
+            <div class="row">
+                <label class="col-form-label col-sm-4" for="">
+                    Free Content
+                </label>
+
+            </div>
+            @endif
+        </div>
+
+
+
+    </div>
+    <!------- Monetize section end ---->
 
 
 

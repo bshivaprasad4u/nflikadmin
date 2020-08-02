@@ -1,150 +1,122 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 @section('content')
-<div class="row" style="width: 90%;">
-    <div class="col-sm-12">
-        <div class="element-wrapper">
-            <h6 class="element-header">
-                Clients
-            </h6>
-            <div class="element-box-tp">
-                <!--------------------
-                      START - Controls Above Table
-                      -------------------->
-                <div class="controls-above-table">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <a class="btn btn-sm btn-secondary" href="{{ route('admin.clients.create')}}">Add Client</a>
-                            <!-- <a class="btn btn-sm btn-secondary" href="#">Archive</a>
-                            <a class="btn btn-sm btn-danger" href="#">Delete</a> -->
-                        </div>
-                        <!-- <div class="col-sm-6">
-                            <form class="form-inline justify-content-sm-end">
-                                <input class="form-control form-control-sm rounded bright" placeholder="Search" type="text"><select class="form-control form-control-sm rounded bright">
-                                    <option selected="selected" value="">
-                                        Select Status
-                                    </option>
-                                    <option value="Pending">
-                                        Pending
-                                    </option>
-                                    <option value="Active">
-                                        Active
-                                    </option>
-                                    <option value="Cancelled">
-                                        Cancelled
-                                    </option>
-                                </select>
-                            </form>
-                        </div> -->
-                    </div>
-                </div>
-                <!--------------------
-                      END - Controls Above Table
-                      ------------------          -->
-                <!--------------------
-                      START - Table with actions
-                      ------------------  -->
-                <div class="table-responsive">
-                    <table class="table table-bordered table-lg table-v2 table-striped">
-                        <thead>
-                            <tr>
+<section class="content">
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">{{ $page_title ?? ''}}</h3>
 
-                                <th>
-                                    Client Name
-                                </th>
-                                <th>
-                                    Email
-                                </th>
-                                <th>
-                                    Phone
-                                </th>
-                                <th>
-                                    Verified
-                                </th>
-                                <th>
-                                    Status
-                                </th>
-                                <th>
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if($clients)
-                            @foreach($clients as $client)
-                            <tr>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fas fa-minus"></i></button>
 
-                                <td>
-                                    {{ $client->name }}
-                                </td>
-                                <td>
-                                    {{ $client->email }}
-                                </td>
-                                <td>
-                                    {{ $client->phone }}
-                                </td>
-                                <td>
-                                    {{ $client->verified_at }}
-                                </td>
-                                <td class="text-center">
-                                    @if($client->status == 'active')
-                                    <div class="status-pill green" data-title="Complete" data-toggle="tooltip"></div>
-                                    @else
-                                    <div class="status-pill red" data-title="Cancelled" data-toggle="tooltip"></div>
-                                    @endif
-                                </td>
-                                <td class="row-actions">
-                                    <a href="#"><i class="os-icon os-icon-ui-49"></i></a><a href="#"><i class="os-icon os-icon-grid-10"></i></a><a class="danger" href="#"><i class="os-icon os-icon-ui-15"></i></a>
-                                </td>
-                            </tr>
-                            @endforeach
-                            @else
-                            <tr>
-                                <td colspan='6'>No Clients Found</td>
-                            </tr>
-                            @endif
-                        </tbody>
-                    </table>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                <table id="example2" class="projects table table-bordered table-hover" data-toggle="dataTable" data-form="deleteForm">
+                    <thead>
+                        <tr>
+                            <th>Agent Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Verified</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                </div>
-                <!--------------------
-                      END - Table with actions
-                      ------------------            -->
-                <!--------------------
-                      START - Controls below table
-                      ------------------  -->
-                <!-- <div class="controls-below-table">
-                    <div class="table-records-info">
-                        Showing records 1 - 5
-                    </div>
-                    <div class="table-records-pages">
-                        <ul>
-                            <li>
-                                <a href="#">Previous</a>
-                            </li>
-                            <li>
-                                <a class="current" href="#">1</a>
-                            </li>
-                            <li>
-                                <a href="#">2</a>
-                            </li>
-                            <li>
-                                <a href="#">3</a>
-                            </li>
-                            <li>
-                                <a href="#">4</a>
-                            </li>
-                            <li>
-                                <a href="#">Next</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div> -->
-                <!--------------------
-                      END - Controls below table
-                      -------------------->
+                        @forelse($agents as $client)
+                        <tr>
+                            <td>{{ $client->name }}</td>
+                            <td>{{ $client->email }}</td>
+                            <td>{{ $client->phone }}</td>
+                            <td>
+                                @if($client->email_verified_at)
+                                <span class="badge badge-success">Verified</span>
+                                @else
+                                <span class="badge badge-info"> Not Verified</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                @if($client->status == 'active')
+                                <span class="badge badge-success"> Active</span>
+                                @else
+                                <span class="badge badge-info"> Inactive</span>
+                                @endif
+                            </td>
+                            <td class="project-actions text-right">
+                                <!-- <a class="btn btn-info btn-sm" href="">
+                                            <i class="fas fa-pencil-alt">
+                                            </i>
+                                            Edit
+                                        </a> -->
+                                <a class="btn btn-primary btn-sm">
+                                    <i class="fas fa-folder">
+                                    </i>
+                                    View
+                                </a>
+                                <!-- <a class="btn btn-danger btn-sm form-delete" " href=" javascript:void(0)">
+                                    <i class="fas fa-trash">
+                                    </i>
+                                    Delete
+                                </a> -->
+
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" align="center"> No Agents Found</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+
             </div>
         </div>
     </div>
-</div>
+</section>
 
+@endsection
+@section('script')
+<script>
+    $(function() {
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "columns": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                {
+                    "orderable": false
+                },
+            ],
+            "info": false,
+            "autoWidth": false,
+        });
+        $(".alert").delay(4000).slideUp(500, function() {
+            $(this).alert('close');
+        });
+        $('table[data-form="deleteForm"]').on('click', '.form-delete', function(e) {
+            e.preventDefault();
+            //var $form=$(this);
+            var form_id = $(this).attr('id');
+            //var $form = $(this).closest("form");
+            //cssssconsole.log($form);
+
+            $('#confirm').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                })
+                .on('click', '#delete-btn', function() {
+                    $('#delete_modal_' + form_id).submit();
+                });
+        });
+    });
+</script>
 @endsection

@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('adminlte/css/adminlte.css')}}">
+    <link rel="stylesheet" href="{{ asset('adminlte/css/custome.css')}}">
     <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}">
     <!-- Google Font: Source Sans Pro -->

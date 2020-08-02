@@ -19,9 +19,9 @@ class CreatePhotosTable extends Migration
             $table->text('description');
             $table->string('link');
             $table->enum('status', ['active', 'inactive']);
-            //$table->unsignedBigInteger('content_id');
-            $table->timestamps();
             $table->foreignId('content_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

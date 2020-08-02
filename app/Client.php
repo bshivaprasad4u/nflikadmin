@@ -16,7 +16,7 @@ class Client extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'subscription_id', 'phone'
+        'name', 'email', 'password', 'subscription_id', 'phone', 'parent_id'
     ];
 
     /**
@@ -38,11 +38,16 @@ class Client extends Authenticatable implements MustVerifyEmail
     ];
     function subscription()
     {
-        $this->belongsTo(Subscription::class);
+        return  $this->belongsTo(Subscription::class);
     }
     function agents()
     {
-        $this->belongsToMany(Agent::class);
+        return $this->hasMany(Client::class, 'parent_id');
+    }
+
+    function channelclient()
+    {
+        return $this->hasOne(Channel::class);
     }
 
     public function sendPasswordResetNotification($token)
