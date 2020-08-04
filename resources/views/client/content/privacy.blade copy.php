@@ -17,7 +17,6 @@
             <div class="card-body">
                 <?php
 
-
                 if ($content->privacy_parameters) {
 
                     $privacy_settings = json_decode($content->privacy_parameters);
@@ -57,7 +56,7 @@
                     <div class="form-group row required">
                         <label class="col-form-label col-sm-4" for="">Restricted Origins</label>
                         <div class="col-sm-8">
-                            <input class="form-control" name="origins" placeholder="Enter Countries to restrict access" type="text" value="{{ (old('origns')) ?? $origins }}">
+                            <input class="form-control" name="origins" placeholder="Enter Countries to restrict access" type="text" value="{{ (old('origns')) ? old('origins') : $origins }}">
                             @error('name')
                             <div class="alert-custome">{{ $message }}</div>
                             @enderror

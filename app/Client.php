@@ -40,15 +40,27 @@ class Client extends Authenticatable implements MustVerifyEmail
     {
         return  $this->belongsTo(Subscription::class);
     }
+
+    function client_subscription()
+    {
+        return $this->hasOne(ClientsSubscriptions::class, 'client_id');
+    }
     function agents()
     {
         return $this->hasMany(Client::class, 'parent_id');
     }
 
-    function channelclient()
+    function client_contents()
     {
-        return $this->hasOne(Channel::class);
+        return $this->hasMany(Content::class, 'client_id');
     }
+
+    function channel()
+    {
+        return $this->hasOne(Channel::class, 'client_id');
+    }
+
+
 
     public function sendPasswordResetNotification($token)
     {

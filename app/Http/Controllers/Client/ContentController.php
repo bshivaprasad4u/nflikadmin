@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Content;
 use App\Category;
+use App\ChannelContent;
 use App\ContentMonetize;
 use App\Settings;
 use App\Teaser;
@@ -39,6 +40,9 @@ class ContentController extends Controller
     {
         $data['page_title'] = 'Videos';
         $data['contents'] = Content::all()->where('client_id', Auth::id())->sortByDesc('created_at');
+        // $client = Auth::user();
+        // $data['contents'] = $client->client_contents;
+        // dd($data['contents']);
 
         return view('client.content.index', $data);
     }
@@ -326,7 +330,9 @@ class ContentController extends Controller
             'name' => $request->name,
             'link' => $video_path,
             'content_id' => $id,
-            'description' => $request->description
+            'description' => $request->description,
+            'created_by' => Auth::id(),
+            'updated_by' => Auth::id()
         ];
         //dd($save_data);
         $teaser = Teaser::create($save_data);
@@ -374,7 +380,9 @@ class ContentController extends Controller
             'name' => $request->name,
             'link' => $file_path,
             'content_id' => $id,
-            'description' => $request->description
+            'description' => $request->description,
+            'created_by' => Auth::id(),
+            'updated_by' => Auth::id(),
         ];
         //dd($save_data);
         $poster = Photo::create($save_data);
@@ -414,7 +422,7 @@ class ContentController extends Controller
             $file_name = time() . '_' . $file->getClientOriginalName();
             //$video_path = $request->file('videofile')->storeAs('uploads', $video_name);
             //$duration = Settings::getDuration($video);
-            $file_path = 'Coupons/' . $file_name;
+            $file_path = 'coupons/' . $file_name;
             //Storage::disk('s3')->put($video_path, file_get_contents($video));
             Storage::disk('s3')->put($file_path, \fopen($file, 'r+'));
         }
@@ -468,7 +476,7 @@ class ContentController extends Controller
             $file_name = time() . '_' . $file->getClientOriginalName();
             //$video_path = $request->file('videofile')->storeAs('uploads', $video_name);
             //$duration = Settings::getDuration($video);
-            $file_path = 'Coupons/' . $file_name;
+            $file_path = 'coupons/' . $file_name;
             //Storage::disk('s3')->put($video_path, file_get_contents($video));
             Storage::disk('s3')->put($file_path, \fopen($file, 'r+'));
         }
@@ -493,5 +501,55 @@ class ContentController extends Controller
         } else {
             return redirect('client/contents/view/' . $request->content_id)->with('failure', "Oops! Monetize Not added.");
         }
+    }
+
+    public function publish($id)
+    {
+        $data['content'] = Content::findorfail($id);
+        $client = $data['content']->client;
+        $channel = $client->channel;
+        //dd($data['content']['id']);
+        $client_slots = $client->client_subscription->clientsubscription['slots'];
+        //dd($client_slots);
+        $client_used_slots = ChannelContent::where('channel_id', $channel->id)->sum('number_of_slots');
+        //dd($client_used_slots);
+        $available_slots = $client_slots - $client_used_slots;
+        //dd($available_slots);
+        list($hours, $minutes, $sec) = explode(':', $data['content']['duration'], 3);
+        $seconds = $sec + $minutes * 60 + $hours * 3600;
+        //dd($client['slot_duration']);
+        $default_slot_duration_in_sec = $client['slot_duration'] * 60;
+        // dd($default_slot_duration_in_sec);
+        $numberofslotsrequired = intval(ceil($seconds / $default_slot_duration_in_sec));
+        //dd($numberofslotsrequired);
+        if ($numberofslotsrequired <= $available_slots) {
+            // dd("u used " . $numberofslotsrequired . "slots");
+            $save_data = [
+                'channel_id' => $channel['id'],
+                'content_id' => $data['content']['id'],
+                'number_of_slots' => $numberofslotsrequired,
+                'created_by' => Auth::id(),
+                'updated_by' => Auth::id()
+            ];
+
+            $content = ChannelContent::create($save_data);
+
+            if ($content) {
+                $update_data = ['publish' => 'yes'];
+                Content::whereId($id)->update($update_data);
+
+                return redirect('client/contents/view/' . $id)->with('success', "Content Published Successfully.");
+            } else {
+                return redirect('client/contents/view/' . $id)->with('failure', "Oops! Something went wrong.");
+            }
+        } else {
+            return redirect('client/contents/view/' . $id)->with('failure', "Oops! $numberofslotsrequired slot(s) required to publish this content those many slots are Not available for you.");
+        }
+
+        //dd($client);
+
+
+
+
     }
 }

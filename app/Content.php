@@ -37,4 +37,14 @@ class Content extends Model
     {
         return $this->hasOne(ContentMonetize::class);
     }
+
+    function client()
+    {
+        return  $this->hasOne(Client::class, 'id', 'client_id');
+    }
+
+    public function channel_content()
+    {
+        return $this->hasOne(ChannelContent::class, 'content_id', 'id');
+    }
 }

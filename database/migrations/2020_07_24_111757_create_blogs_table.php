@@ -20,8 +20,12 @@ class CreateBlogsTable extends Migration
             $table->string('tags');
             $table->enum('status', ['active', 'inactive']);
             $table->foreignId('content_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('created_by')->references('id')->on('clients')->onDelete('cascade');
+            $table->foreign('updated_by')->references('id')->on('clients')->onDelete('cascade');
         });
     }
 

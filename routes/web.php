@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('admin/login');
 });
-Auth::routes();
+
+//Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->name('home');
 Route::view('forgot_password', 'auth.passwords.reset')->name('password.reset');
@@ -87,8 +88,11 @@ Route::group(['prefix' => 'client',  'namespace' => 'Client'], function () {
         Route::get('contents/monetizeupdate/{id}', 'ContentController@monetize_edit')->name('client.contents.monetize_edit');
         Route::post('contents/monetizeupdate/{id}', 'ContentController@monetize_update')->name('client.contents.monetize_update');
 
+        Route::get('contents/publish/{id}', 'ContentController@publish')->name('client.contents.publish');
+        Route::post('contents/publish_store/{id}', 'ContentController@publish_store')->name('client.contents.publish_store');
+
         Route::get('channel/edit/{id}', 'ChannelController@edit')->name('client.channel.edit');
-        Route::post('contents/update/{id}', 'ChannelController@update')->name('client.channel.update');
+        Route::post('channel/update/{id}', 'ChannelController@update')->name('client.channel.update');
         Route::get('channel/view', 'ChannelController@view')->name('client.channel.view');
         /////// Agents Routes
         Route::get('agents', 'AgentController@index')->name('client.agents.index');

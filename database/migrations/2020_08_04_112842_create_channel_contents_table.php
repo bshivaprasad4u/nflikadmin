@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePhotosTable extends Migration
+class CreateChannelContentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,17 @@ class CreatePhotosTable extends Migration
      */
     public function up()
     {
-        Schema::create('photos', function (Blueprint $table) {
+        Schema::create('channel_contents', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description');
-            $table->string('link');
-            $table->enum('status', ['active', 'inactive']);
-            $table->foreignId('content_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('channel_id');
+            $table->unsignedBigInteger('content_id');
+            $table->integer('number_of_slots');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('content_id')->references('id')->on('contents')->onDelete('cascade');
+            $table->foreign('channel_id')->references('id')->on('channels')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('updated_by')->references('id')->on('clients')->onDelete('cascade');
         });
@@ -36,6 +36,6 @@ class CreatePhotosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('photos');
+        Schema::dropIfExists('channel_contents');
     }
 }

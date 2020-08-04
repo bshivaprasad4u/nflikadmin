@@ -11,7 +11,7 @@
                     <div class="custom-file" id="result_div">
                         <input type="file" name="videofile" require class="custom-file-input file-upload" id="fileupload" data-link="{{route('client.contents.video_store', $content->id)}}">
                         <label class="custom-file-label" for="fileupload">Select Video</label>
-                        <div class="progress">
+                        <div class="progress" style="padding-top: 3px;">
                             <div class="progress-bar bg-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">&nbsp;</div>
                         </div>
                     </div>
@@ -58,6 +58,7 @@
                 cache: false,
                 done: function(e, data) {
                     $('#fileupload_success').html(data.result.file);
+                    location.reload();
                     // $('#loading').text('');
                     $('.progress-bar').hide().css(
                         'width',

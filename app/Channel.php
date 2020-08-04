@@ -12,6 +12,6 @@ class Channel extends Model
 
     function client()
     {
-        return  $this->belongsTo(Client::class)->whereNull('parent_id');
+        return  $this->hasOne(Client::class)->whereNull('parent_id');
     }
 }

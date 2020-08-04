@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <section class="content">
-    <div class="card">
+    <div class="card card-info">
         <div class="card-header">
             <h3 class="card-title">Add Teaser</h3>
 
@@ -28,7 +28,12 @@
                 <div class="form-group row">
                     <label class="col-form-label col-sm-4" for="">Video File</label>
                     <div class="col-sm-8">
-                        <input class="form-control" name="videofile" placeholder="Select Video" type="file">
+
+                        <div class="custom-file" id="result_div">
+                            <input class="form-control" id="fileupload" name="videofile" placeholder="Select Video" type="file">
+                            <label class="custom-file-label" for="fileupload">Select Video</label>
+
+                        </div>
                         @error('videofile')
                         <div class="alert-custome">{{ $message }}</div>
                         @enderror
@@ -54,4 +59,17 @@
     </div>
     </div>
 </section>
+@endsection
+@section('script')
+<script>
+    $(function() {
+
+        $('#fileupload').on('change', function(e) {
+            //get the file name
+            var fileName = e.target.files[0].name;
+            //replace the "Choose a file" label
+            $(this).next('.custom-file-label').html(fileName);
+        });
+    });
+</script>
 @endsection

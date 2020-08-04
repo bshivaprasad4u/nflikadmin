@@ -21,7 +21,11 @@ class CreateTeasersTable extends Migration
             $table->enum('status', ['active', 'inactive']);
             $table->foreignId('content_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by');
             $table->softDeletes();
+            $table->foreign('created_by')->references('id')->on('clients')->onDelete('cascade');
+            $table->foreign('updated_by')->references('id')->on('clients')->onDelete('cascade');
         });
     }
 

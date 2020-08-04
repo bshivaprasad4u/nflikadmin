@@ -90,6 +90,9 @@
             <h3 class="card-title">Video File</h3>
 
             <div class="card-tools">
+                @if($content->publish == 'no' && $content->content_link != '')
+                <a href="{{ route('client.contents.publish',$content->id)}}">Publish</a>
+                @endif
                 <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
                     <i class="fas fa-minus"></i></button>
 
@@ -103,6 +106,12 @@
             @else
             {{ $content->content_link}}
             @endif
+            @if($content->publish == 'yes')
+            @if($content->channel_content->number_of_slots < 2 ) <span style="color:red">({{$content->channel_content->number_of_slots}}) Slot is using</span>
+                @else
+                <span style="color:red">({{$content->channel_content->number_of_slots}}) Slots are using</span>
+                @endif
+                @endif
         </div>
 
 
@@ -168,17 +177,30 @@
         <div class="card-body">
 
             @forelse($content->teasers as $teaser)
-            <div class="row">
+            <div class="row row-striped">
                 <label class="col-form-label col-sm-4" for="">
                     {{ $teaser->name }}
                 </label>
-                <div class="col-sm-8">
+                <div class="col-sm-4">
                     @if($teaser->status == 'active')
                     <span class="badge badge-success"> Active</span>
                     @else
                     <span class="badge badge-info"> Inactive</span>
                     @endif
                 </div>
+                <div class="col-sm-4">
+                    <!-- <a class="btn btn-info btn-sm" href="#">
+                        <i class="fas fa-pencil-alt">
+                        </i>
+                        Edit
+                    </a>
+                    <a class="btn btn-danger btn-sm" href="#">
+                        <i class="fas fa-trash">
+                        </i>
+                        Delete
+                    </a> -->
+                </div>
+
 
             </div>
             @empty
@@ -242,7 +264,6 @@
     <div class="card card-info">
         <div class="card-header">
             <h3 class="card-title">Monetize</h3>
-
             <div class="card-tools">
                 @if($content->monetize == 'no')
                 <a href="{{ route('client.contents.monetize_add',$content->id)}}">Monetize</a>
