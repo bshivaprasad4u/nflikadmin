@@ -16,7 +16,9 @@ class RegistrationController extends ApiController
      */
     public function register(RegistrationRequest $request)
     {
-        User::create($request->getAttributes())->sendEmailVerificationNotification();
+        $user = User::create($request->getAttributes())->sendEmailVerificationNotification();
+        //dd($user);
+        //$user->sendEmailVerificationNotification();
 
         return $this->respondWithMessage('User successfully created');
     }
