@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -16,7 +17,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+        //'App\Model' => 'App\Policies\ModelPolicy',
+        Content::class => ContentPolicy::class,
     ];
 
     /**
@@ -26,15 +28,17 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $client = Auth::user();
-        Gate::define('view_agents', function ($client) {
-            if ($client->parent_id == 0)
-                return true;
-        });
-        Gate::define('view_channels', function ($client) {
-            if ($client->parent_id == 0)
-                return true;
-        });
+        if (Route::is('client.*')) {
+            $client = Auth::user();
+            Gate::define('view_agents', function ($client) {
+                if ($client->parent_id == 0)
+                    return true;
+            });
+            Gate::define('view_channels', function ($client) {
+                if ($client->parent_id == 0)
+                    return true;
+            });
+        }
         $this->registerPolicies();
 
         //

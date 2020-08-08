@@ -143,10 +143,8 @@
 </section>
 @endsection
 @section('script')
-<script src="{{ asset('adminlte/plugins/typehead.js/dist/bootstrap-tagsinput.min.js') }}"></script>
 <script>
     $(function() {
-
         $('#banner_image').on('change', function(e) {
             //get the file name
             var fileName = e.target.files[0].name;

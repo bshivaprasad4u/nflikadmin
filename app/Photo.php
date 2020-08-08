@@ -8,7 +8,7 @@ use App\Content;
 class Photo extends Model
 {
     protected $fillable = [
-        'name', 'description', 'link', 'status', 'content_id'
+        'name', 'description', 'link', 'status', 'content_id', 'created_by', 'updated_by'
     ];
 
     public function content()

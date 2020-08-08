@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ClientPasswordReset;
+use App\Notifications\ClientVerifyEmail;
 
 class Client extends Authenticatable implements MustVerifyEmail
 {

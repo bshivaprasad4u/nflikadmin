@@ -19,7 +19,6 @@ use App\Photo;
 class ContentController extends Controller
 {
 
-
     /**
      * Create a new controller instance.
      *
@@ -30,7 +29,16 @@ class ContentController extends Controller
         $this->middleware('auth:client');
     }
 
-
+    protected function client()
+    {
+        //$user = Auth::id();
+        //dd(Auth::user()->parent_id);
+        if (Auth::user()->parent_id)
+            $client_id = Auth::user()->parent_id;
+        else
+            $client_id = Auth::id();
+        return $client_id;
+    }
     /**
      * Show the application dashboard.
      *
@@ -39,7 +47,11 @@ class ContentController extends Controller
     public function index()
     {
         $data['page_title'] = 'Videos';
-        $data['contents'] = Content::all()->where('client_id', Auth::id())->sortByDesc('created_at');
+        if ($this->client() == Auth::id())
+            $data['contents'] = Content::all()->where('client_id', Auth::id())->sortByDesc('created_at');
+        else
+            $data['contents'] = Content::all()->where('created_by', Auth::id())->sortByDesc('created_at');
+
         // $client = Auth::user();
         // $data['contents'] = $client->client_contents;
         // dd($data['contents']);
@@ -108,7 +120,7 @@ class ContentController extends Controller
             //'format' => ($video_extension) ?? '',
             'tags' => json_encode($tags),
             'display_tags' => json_encode($display_tags),
-            'client_id' => Auth::id(),
+            'client_id' => $this->client(),
             'artist' => $request->artist,
             'castandcrew' => $request->castandcrew,
             'description' => $request->description,
@@ -131,11 +143,13 @@ class ContentController extends Controller
      */
     public function edit($id)
     {
+        $data['content'] = Content::findorfail($id);
+        $this->authorize('edit', $data['content']);
         $data['page_title'] = 'Update Content';
         $data['categories'] = Category::all()->sortBy('name');
         $data['languages'] = Settings::LANGUAGES;
         $data['genres'] = Settings::GENRES;
-        $data['content'] = Content::findorfail($id);
+
         return view('client.content.edit', $data);
     }
     /**
@@ -186,7 +200,7 @@ class ContentController extends Controller
             //'format' => ($video_extension) ?? '',
             'tags' => json_encode($tags),
             'display_tags' => json_encode($display_tags),
-            'client_id' => Auth::id(),
+            //'client_id' => $this->client(),
             'artist' => $request->artist,
             'castandcrew' => $request->castandcrew,
             'description' => $request->description,
@@ -251,7 +265,9 @@ class ContentController extends Controller
      */
     public function view($id)
     {
+        $user = Auth::user();
         $data['content'] = Content::findorfail($id);
+        $this->authorize('view', $data['content']);
         $data['page_title'] = 'Content Details';
         $data['countries'] = Settings::COUNTRIES;
         //$data['privacy_settings'] = json_decode($data['content']->privacy_settings);
@@ -282,7 +298,7 @@ class ContentController extends Controller
             'Restricted_Origins' => explode(',', $request->origins)
         ];
         // dd($privacy_data);
-        $save_data = ['privacy' => 'yes', 'privacy_parameters' => json_encode($privacy_data)];
+        $save_data = ['privacy_settings' => json_encode($privacy_data)];
         $privacy = Content::whereId($id)->update($save_data);
         if ($privacy) {
             return redirect('client/contents/view/' . $id)->with('success', "Privacy Settings Changed Successfully.");
@@ -411,7 +427,7 @@ class ContentController extends Controller
         $data['content'] = Content::findorfail($id);
         $validationData = $request->validate(
             [
-                'price' => ['required', 'numeric', 'max:255'],
+                'price' => ['required', 'numeric'],
                 'currency' => ['required', 'string'],
                 'file' => 'required|mimes:png,PNG,jpg,JPG,jpeg,JPEG|max:' . config('constants.MAX_FILE_UPLOAD_SIZE'),
                 //'description' => ['required', 'string'],
@@ -465,7 +481,7 @@ class ContentController extends Controller
         $data['currencies'] = Settings::CURRENCIES;
         $validationData = $request->validate(
             [
-                'price' => ['required', 'numeric', 'max:255'],
+                'price' => ['required', 'numeric'],
                 'currency' => ['required', 'string'],
                 'file' => 'sometimes|nullable|mimes:png,PNG,jpg,JPG,jpeg,JPEG|max:' . config('constants.MAX_FILE_UPLOAD_SIZE'),
                 //'description' => ['required', 'string'],
@@ -513,7 +529,8 @@ class ContentController extends Controller
         //dd($client_slots);
         $client_used_slots = ChannelContent::where('channel_id', $channel->id)->sum('number_of_slots');
         //dd($client_used_slots);
-        $available_slots = $client_slots - $client_used_slots;
+
+
         //dd($available_slots);
         list($hours, $minutes, $sec) = explode(':', $data['content']['duration'], 3);
         $seconds = $sec + $minutes * 60 + $hours * 3600;
@@ -522,6 +539,11 @@ class ContentController extends Controller
         // dd($default_slot_duration_in_sec);
         $numberofslotsrequired = intval(ceil($seconds / $default_slot_duration_in_sec));
         //dd($numberofslotsrequired);
+        if ($client_slots == '') {
+            $available_slots = $numberofslotsrequired + 1;
+        } else {
+            $available_slots = $client_slots - $client_used_slots;
+        }
         if ($numberofslotsrequired <= $available_slots) {
             // dd("u used " . $numberofslotsrequired . "slots");
             $save_data = [

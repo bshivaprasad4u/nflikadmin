@@ -33,6 +33,8 @@
   <!-- REQUIRED SCRIPTS -->
   @include('adminlte.includes.foot')
   @yield('script')
+  @yield('menuscript')
+
 </body>
 
 </html>

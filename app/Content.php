@@ -16,7 +16,7 @@ class Content extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'category_id',  'artist', 'castandcrew', 'description', 'banner_image', 'content_link', 'format', 'client_id', 'status', 'publish', 'monetize', 'language', 'genres', 'tags', 'display_tags', 'privacy', 'privacy_parameters', 'go_live_status', 'go_live_date', 'created_by', 'updated_by'
+        'name', 'category_id',  'artist', 'castandcrew', 'description', 'banner_image', 'content_link', 'format', 'client_id', 'status', 'publish', 'monetize', 'language', 'genres', 'tags', 'display_tags', 'privacy_settings', 'go_live_status', 'go_live_date', 'created_by', 'updated_by'
     ];
 
 
