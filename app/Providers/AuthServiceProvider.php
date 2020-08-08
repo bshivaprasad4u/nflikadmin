@@ -28,17 +28,17 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (Route::is('client.*')) {
-            $client = Auth::user();
-            Gate::define('view_agents', function ($client) {
-                if ($client->parent_id == 0)
-                    return true;
-            });
-            Gate::define('view_channels', function ($client) {
-                if ($client->parent_id == 0)
-                    return true;
-            });
-        }
+        //if (Route::is('client.*')) {
+        $client = Auth::user();
+        Gate::define('view_agents', function ($client) {
+            if ($client->parent_id == 0)
+                return true;
+        });
+        Gate::define('view_channels', function ($client) {
+            if ($client->parent_id == 0)
+                return true;
+        });
+        //}
         $this->registerPolicies();
 
         //
