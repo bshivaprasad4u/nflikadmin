@@ -26,12 +26,19 @@ Route::group([
 ], function ($router) {
     Route::post('login', 'AuthController@login')->name('api.v1.login');
     Route::post('logout', 'AuthController@logout')->name('api.v1.logout');
-    Route::post('refresh', 'AuthController@refresh')->middleware('auth:api');
-    Route::get('me', 'AuthController@me')->middleware('auth:api');
-
     Route::post('register', 'RegistrationController@register')->name('api.v1.register');
     Route::get('verification/verify/{id}', 'VerificationController@verify')->name('api.v1.verification.verify');
     Route::get('verification/resend', 'VerificationController@resend')->name('verification.resend')->middleware('auth:api');
     Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail');
     Route::post('password/reset', 'ForgotPasswordController@reset')->name('api.v1.password.reset');
+    Route::group([
+        'middleware' => ['auth:api'],
+    ], function ($router) {
+        Route::post('refresh', 'AuthController@refresh')->middleware('auth:api');
+        Route::get('me', 'AuthController@me')->middleware('auth:api');
+        Route::post('profile_update', 'UserController@profile_update');
+        Route::post('profile_settings', 'UserController@profile_settings');
+        Route::post('profile_picture', 'UserController@profile_image');
+        Route::get('auth_user_api', 'AuthController@me');
+    });
 });

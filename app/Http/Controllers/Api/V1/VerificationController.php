@@ -46,7 +46,8 @@ class VerificationController extends ApiController
             $user->markEmailAsVerified();
         }
 
-        return redirect()->to('/');
+        //return redirect()->to('ww');
+        return redirect()->away('https://nflik.com');
     }
 
     /**
