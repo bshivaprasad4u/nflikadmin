@@ -24,11 +24,28 @@ class UserController extends ApiController
                 'dob' => 'sometimes|nullable'
             ]
         );
-
         auth('api')->user()->update($attributes);
 
         return $this->respondWithMessage("User successfully updated");
     }
+    public function password_update()
+    {
+        $attributes = request()->validate(
+            [
+                'old_password' => 'required|string',
+                'password' => 'required|string',
+                'confirm_password' => 'requeired|string'
+            ]
+        );
+        $user = User::findOrFail(auth('api')->id());
+        if ($user->password == bcrypt($request->old_password)) {
+            //$this->respondWithError('257',);
+        }
+        auth('api')->user()->update($attributes);
+
+        return $this->respondWithMessage("Password changed.");
+    }
+
     public function devices()
     {
         $devices = Device::where(['user_id' => Auth::id(), 'verfication' => ''])->get();

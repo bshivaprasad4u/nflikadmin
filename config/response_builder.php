@@ -25,7 +25,8 @@ return [
         ApiCode::INVALID_EMAIL_VERIFICATION_URL => 'api.invalid_email_verification_url',
         ApiCode::EMAIL_ALREADY_VERIFIED => 'api.email_already_verified',
         ApiCode::INVALID_RESET_PASSWORD_TOKEN => 'api.invalid_reset_password_token',
-        ApiCode::PASSWORD_RESET_LINK => 'passwords.sent'
+        ApiCode::PASSWORD_RESET_LINK => 'passwords.sent',
+        ApiCode::INVALID_PASSWORD => 'password.invalid'
     ],
 
 ];

@@ -11,4 +11,5 @@ class ApiCode
     public const INVALID_EMAIL_VERIFICATION_URL = 254;
     public const INVALID_RESET_PASSWORD_TOKEN = 255;
     public const PASSWORD_RESET_LINK = 256;
+    public const INVALID_PASSWORD = 257;
 }

@@ -2,7 +2,7 @@
 
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
-#use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,8 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('admin/login');
 });
-
-#Auth::routes();
+Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->name('home');
 Route::view('forgot_password', 'auth.passwords.reset')->name('password.reset');
@@ -56,7 +55,7 @@ Route::group(['prefix' => 'client',  'namespace' => 'Client'], function () {
     Route::get('/', 'Auth\LoginController@showLoginForm')->name('client.index');
     // Authentication Routes...
     Route::get('login', 'Auth\LoginController@showLoginForm')->name('client.login');
-    Route::post('login', 'Auth\LoginController@login')->name('login');
+    Route::post('login', 'Auth\LoginController@login');
     Route::post('logout', 'Auth\LoginController@logout')->name('client.logout');
     // Password reset routes
     Route::post('/password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('client.password.email');
