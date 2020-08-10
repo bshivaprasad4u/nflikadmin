@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', function () {
     return redirect('admin/login');
 });
-Auth::routes();
+#Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->name('home');
 Route::view('forgot_password', 'auth.passwords.reset')->name('password.reset');
