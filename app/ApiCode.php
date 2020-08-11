@@ -12,4 +12,5 @@ class ApiCode
     public const INVALID_RESET_PASSWORD_TOKEN = 255;
     public const PASSWORD_RESET_LINK = 256;
     public const INVALID_PASSWORD = 257;
+    public const SAME_PASSWORD_AS_OLD = 258;
 }

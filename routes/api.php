@@ -39,6 +39,7 @@ Route::group([
         Route::post('profile_update', 'UserController@profile_update');
         Route::post('profile_settings', 'UserController@profile_settings');
         Route::post('profile_picture', 'UserController@profile_image');
+        Route::post('password_update', 'UserController@password_update');
         Route::get('auth_user_api', 'AuthController@me');
     });
 });
