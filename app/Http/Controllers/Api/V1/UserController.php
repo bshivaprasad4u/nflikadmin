@@ -27,7 +27,7 @@ class UserController extends ApiController
         );
         auth('api')->user()->update($attributes);
 
-        return $this->respondWithMessage("User successfully updated");
+        return $this->respondWithMessage("Profile updated successfully.");
     }
     public function password_update(Request $request)
     {
@@ -64,7 +64,7 @@ class UserController extends ApiController
         $user = User::findOrFail(auth('api')->id());
         //dd($user);
         $user->update(['profile_settings' => json_encode($request->all())]);
-        return $this->respondWithMessage('Profile settings updated.');
+        return $this->respondWithMessage('Profile settings updated successfully.');
     }
     public function profile_image(Request $request)
     {
@@ -84,6 +84,6 @@ class UserController extends ApiController
             Storage::disk('s3')->put($file_path, \fopen($file, 'r+'));
         }
         auth()->user()->update(['profile_image' => $file_path]);
-        return $this->respondWithMessage('Profile Picture Changed.');
+        return $this->respondWithMessage('Profile Picture Changed successfully.');
     }
 }

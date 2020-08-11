@@ -40,8 +40,8 @@ class RegistrationController extends ApiController
             $device_name = $agent->robot();
         }
         //$device_name = $agent->device();
-        $platform = ($agent->platform()) ? '' : '';
-        $browser = ($agent->browser()) ? '' : '';
+        $platform = ($agent->platform()) ?? '';
+        $browser = ($agent->browser()) ?? '';
         //$verification_code = mt_rand(100000, 999999);
 
         $device_data = ['device_name' => $device_name, 'platform' => $platform, 'browser' => $browser,  'user_id' => $user_id];
