@@ -55,6 +55,7 @@ class AuthController extends ApiController
         //dd(Auth::user());
         $auth_user_api = [
             //'token' => auth('api')->user()->getJWTIdentifier,
+            'user_id' => Auth::id(),
             'user' => Auth::user(),
             //'devices' => auth('api')->user()->devices
         ];
