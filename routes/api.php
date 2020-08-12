@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group([
     'prefix' => 'v1',
-    'middleware' => ['api'],
+    'middleware' => ['api', 'CORS'],
     'namespace' => 'Api\V1'
 
 ], function ($router) {
