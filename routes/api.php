@@ -36,6 +36,7 @@ Route::group([
     ], function ($router) {
         Route::post('refresh', 'AuthController@refresh')->middleware('auth:api');
         Route::get('me', 'AuthController@me')->middleware('auth:api');
+        Route::post('register_device', 'UserController@register_device');
         Route::post('profile_update', 'UserController@profile_update');
         Route::post('profile_settings', 'UserController@profile_settings');
         Route::post('profile_picture', 'UserController@profile_image');

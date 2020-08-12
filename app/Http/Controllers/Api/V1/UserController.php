@@ -22,7 +22,12 @@ class UserController extends ApiController
         $attributes = request()->validate(
             [
                 'name' => 'required|string',
-                'dob' => 'sometimes|nullable'
+                'dob' => 'sometimes|nullable',
+                'country' => 'sometimes|nullable',
+                'state' => 'sometimes|nullable',
+                'city' => 'sometimes|nullable',
+                'zip' => 'sometimes|nullable',
+                'address' => 'sometimes|nullable',
             ]
         );
         auth('api')->user()->update($attributes);

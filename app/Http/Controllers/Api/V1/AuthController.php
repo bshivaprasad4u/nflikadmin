@@ -24,7 +24,7 @@ class AuthController extends ApiController
         if (!$token = auth()->attempt($credentials)) {
             return $this->respondUnAuthorizedRequest(ApiCode::INVALID_CREDENTIALS);
         }
-        $this->register_device();
+        //$this->register_device();
         return $this->respondWithToken($token);
     }
 
@@ -55,8 +55,7 @@ class AuthController extends ApiController
         //dd(Auth::user());
         $auth_user_api = [
             //'token' => auth('api')->user()->getJWTIdentifier,
-            'user_id' => Auth::id(),
-            'user' => Auth::user(),
+            'user_details' => Auth::user(),
             //'devices' => auth('api')->user()->devices
         ];
         return $this->respond($auth_user_api);
@@ -75,8 +74,8 @@ class AuthController extends ApiController
             $device_name = $agent->robot();
         }
         //$device_name = $agent->device();
-        $platform = ($agent->platform()) ? '' : '';
-        $browser = ($agent->browser()) ? '' : '';
+        $platform = ($agent->platform()) ?? '';
+        $browser = ($agent->browser()) ?? '';
         $verification_code = mt_rand(100000, 999999);
 
         $device_data = ['device_name' => $device_name, 'platform' => $platform, 'browser' => $browser, 'verification_code' => $verification_code, 'user_id' => auth('api')->id()];
