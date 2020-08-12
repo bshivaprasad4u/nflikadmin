@@ -67,7 +67,10 @@ class ClientController extends Controller
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:clients'],
                 'phone' => ['required', 'string',  'min:10', 'unique:clients'],
-                'subscription' => ['required']
+                'subscription' => ['required'],
+                'subdomain' => ['sometimes|nullable'],
+                'slot_duration' => ['integer']
+
             ]
         );
         $save_data = ['name' => $request->name, 'email' => $request->email, 'phone' => $request->phone, 'password' => Hash::make($request->phone)];

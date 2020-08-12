@@ -56,6 +56,24 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4" for=""> Sub Domain</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" placeholder="Sub Domain" type="text" name="subdomain" value="{{ old('subdomain') }}">
+                        @error('phone')
+                        <div class="alert-custome">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4" for=""> Slot Duration</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" placeholder="Slot Duration" type="text" name="slot_duration" value="{{ old('slot_duration') }}">
+                        @error('phone')
+                        <div class="alert-custome">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
             </div>
             <div class="card-footer">
                 <button class="btn btn-primary float-right" type="submit"> Submit</button>
