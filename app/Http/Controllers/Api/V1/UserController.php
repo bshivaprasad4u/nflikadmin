@@ -22,6 +22,7 @@ class UserController extends ApiController
         $attributes = request()->validate(
             [
                 'name' => 'required|string',
+                'mobile' => 'required|digits:10',
                 'dob' => 'sometimes|nullable',
                 'country' => 'sometimes|nullable',
                 'state' => 'sometimes|nullable',

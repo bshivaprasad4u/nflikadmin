@@ -24,7 +24,7 @@ class RegistrationController extends ApiController
             [
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'mobile' => ['required', 'string',  'min:10', 'unique:users,mobile'],
+                'mobile' => ['required', 'digits:10', 'unique:users,mobile'],
             ]
         );
         $new_password = Str::random(8);
