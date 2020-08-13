@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Client;
 use App\ClientsSubscriptions;
 use App\Channel;
+use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
@@ -68,12 +69,14 @@ class ClientController extends Controller
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:clients'],
                 'phone' => ['required', 'string',  'min:10', 'unique:clients'],
                 'subscription' => ['required'],
-                'subdomain' => ['sometimes|nullable'],
-                'slot_duration' => ['integer']
+                'subdomain' => 'sometimes|nullable|alpha_num',
+                'slot_duration' => 'sometimes|nullable|integer',
 
             ]
         );
-        $save_data = ['name' => $request->name, 'email' => $request->email, 'phone' => $request->phone, 'password' => Hash::make($request->phone)];
+        $password = Str::random(8);
+        $save_data = ['name' => $request->name, 'email' => $request->email, 'phone' => $request->phone, 'password' => Hash::make($password), 'slot_duration' => $request->slot_duration];
+        //$save_data = ['name' => $request->name, 'email' => $request->email, 'phone' => $request->phone, 'password' => Hash::make($request->phone), 'slot_duration' => $request->slot_duration];
         $client = Client::create($save_data);
         ClientsSubscriptions::create(
             [
@@ -83,8 +86,10 @@ class ClientController extends Controller
         );
         Channel::create([
             'client_id' => $client->id,
+            'subdomain' => $request->subdomain
         ]);
-        $client->sendEmailVerificationNotification();
+        //$client->sendEmailVerificationNotification();
+        $client->sendClientPasswordNotification($password);
 
         if ($client) {
             return redirect('admin/clients')->with('success', "Client Added Successfully.");

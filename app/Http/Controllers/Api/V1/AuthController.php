@@ -20,7 +20,7 @@ class AuthController extends ApiController
 
     public function login()
     {
-        $credentials = request()->validate(['email' => 'required|email', 'password' => 'required|string|max:25']);
+        $credentials = request()->validate(['email' => 'required|email', 'password' => 'required']);
         if (!$token = auth()->attempt($credentials)) {
             return $this->respondUnAuthorizedRequest(ApiCode::INVALID_CREDENTIALS);
         }

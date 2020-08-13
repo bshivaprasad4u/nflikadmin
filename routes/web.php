@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', function () {
     return redirect('admin/login');
 });
-#Auth::routes();
+Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->name('home');
 Route::view('forgot_password', 'auth.passwords.reset')->name('password.reset');
@@ -63,12 +63,14 @@ Route::group(['prefix' => 'client',  'namespace' => 'Client'], function () {
     Route::post('/password/reset', 'Auth\ResetPasswordController@reset')->name('client.password.update');;
     Route::get('/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('client.password.reset');
     // verification routes
-    Route::get('/email/verify', 'Auth\VerificationController@show')->name('verification.notice');
-    Route::get('/email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->name('verification.verify')->middleware('auth:client');
-    Route::post('/email/resend', 'Auth\VerificationController@resend')->name('verification.resend')->middleware('auth:client');
+    // Route::get('/email/verify', 'Auth\VerificationController@show')->name('verification.notice');
+    // Route::get('/email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->name('verification.verify')->middleware('auth:client');
+    // Route::post('/email/resend', 'Auth\VerificationController@resend')->name('verification.resend')->middleware('auth:client');
 
     Route::group(['middleware' => 'auth:client'], function () {
-        Route::get('dashboard', 'ClientController@dashboard')->name('client.dashboard')->middleware('verified:verification.notice');
+        Route::get('change_password', 'ClientProfileController@index')->name('client.change_password');
+        Route::post('change_password', 'ClientProfileController@store')->name('client.change_password');
+        Route::get('dashboard', 'ClientController@dashboard')->name('client.dashboard'); //->middleware('verified:verification.notice');
         Route::get('contents', 'ContentController@index')->name('client.contents.index');
         Route::get('contents/create', 'ContentController@create')->name('client.contents.create');
         Route::post('contents/store', 'ContentController@store')->name('client.contents.store');

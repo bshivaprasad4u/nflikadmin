@@ -46,10 +46,10 @@ class UserController extends ApiController
         );
         $user = User::findOrFail(auth('api')->id());
         if ((Hash::check(request('current_password'), $user->password)) == false) {
-            return $this->respondWithError('257', 500);
+            return $this->respondWithError('257', 401);
         } else
         if ((Hash::check(request('password'), $user->password)) == true) {
-            return $this->respondWithError('258', 500);
+            return $this->respondWithError('258', 401);
         } else {
             $password = ['password' => request('password')];
             auth('api')->user()->update($password);

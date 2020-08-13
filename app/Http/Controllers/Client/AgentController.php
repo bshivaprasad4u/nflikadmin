@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 use App\Client;
 
@@ -68,14 +69,17 @@ class AgentController extends Controller
                 'phone' => ['required', 'string',  'min:10', 'unique:clients'],
             ]
         );
+        $password = Str::random(8);
         $save_data = [
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'password' => Hash::make($request->phone),
+            'password' => Hash::make($password),
             'parent_id' => Auth::id()
         ];
-        $client = Client::create($save_data)->sendEmailVerificationNotification();
+        //dd($save_data);
+        $client = Client::create($save_data);
+        $client->sendClientPasswordNotification($password);
 
 
         if ($client) {

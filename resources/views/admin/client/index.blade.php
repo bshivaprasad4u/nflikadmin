@@ -19,7 +19,7 @@
                             <th>Client Name</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th>Verified</th>
+                            <!-- <th>Verified</th> -->
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -33,13 +33,13 @@
                             <td>{{ $client->name }}</td>
                             <td>{{ $client->email }}</td>
                             <td>{{ $client->phone }}</td>
-                            <td>
+                            <!-- <td>
                                 @if($client->email_verified_at)
                                 <span class="badge badge-success">Verified</span>
                                 @else
                                 <span class="badge badge-info"> Not Verified</span>
                                 @endif
-                            </td>
+                            </td> -->
                             <td class="text-center">
                                 @if($client->status == 'active')
                                 <span class="badge badge-success"> Active</span>
@@ -93,7 +93,7 @@
                 null,
                 null,
                 null,
-                null,
+                // null,
                 null,
                 {
                     "orderable": false

@@ -2,13 +2,13 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+//use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ClientPasswordReset;
-use App\Notifications\ClientVerifyEmail;
+use App\Notifications\ClientPasswordEmail;
 
-class Client extends Authenticatable implements MustVerifyEmail
+class Client extends Authenticatable //implements MustVerifyEmail
 {
     use Notifiable;
     /**
@@ -61,8 +61,11 @@ class Client extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Channel::class, 'client_id');
     }
 
-
-
+    ////////// Mails ///////////////////////////
+    public function sendClientPasswordNotification($val)
+    {
+        $this->notify(new ClientPasswordEmail($val));
+    }
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ClientPasswordReset($token));

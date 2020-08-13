@@ -58,7 +58,11 @@
 
                   <!-- Menu Footer-->
                   <li class="user-footer">
+                      @if(Auth::getDefaultDriver()== 'admin')
                       <a href="#" class="btn btn-default btn-flat">Profile</a>
+                      @elseif(Auth::getDefaultDriver()== 'client')
+                      <a href="{{ route('client.change_password') }}" class="btn btn-default btn-flat">Change Password</a>
+                      @endif
 
                       @if(Auth::getDefaultDriver()== 'admin')
                       <a href="{{ route('admin.logout') }}" onclick="event.preventDefault();
@@ -70,12 +74,6 @@
                       <a href="{{ route('client.logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();" class="btn btn-default btn-flat float-right">Sign out</a>
                       <form id="logout-form" action="{{ route('client.logout') }}" method="POST" style="display: none;">
-                          @csrf
-                      </form>
-                      @elseif(Auth::getDefaultDriver()== 'agent')
-                      <a href="{{ route('admin.logout') }}" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();" class="btn btn-default btn-flat float-right">Sign out</a>
-                      <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                           @csrf
                       </form>
                       @else

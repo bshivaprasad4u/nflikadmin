@@ -27,8 +27,9 @@ Route::group([
     Route::post('login', 'AuthController@login')->name('api.v1.login');
     Route::post('logout', 'AuthController@logout')->name('api.v1.logout');
     Route::post('register', 'RegistrationController@register')->name('api.v1.register');
-    Route::get('verification/verify/{id}', 'VerificationController@verify')->name('api.v1.verification.verify');
-    Route::get('verification/resend', 'VerificationController@resend')->name('verification.resend')->middleware('auth:api');
+    //Route::post('forgot_password', 'AuthController@forgot')->name('api.v1.forgot_password');
+    //Route::get('verification/verify/{id}', 'VerificationController@verify')->name('api.v1.verification.verify');
+    //Route::get('verification/resend', 'VerificationController@resend')->name('verification.resend')->middleware('auth:api');
     Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail');
     Route::post('password/reset', 'ForgotPasswordController@reset')->name('api.v1.password.reset');
     Route::group([

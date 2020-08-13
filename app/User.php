@@ -7,9 +7,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use App\Notifications\CustomVerifyEmail;
+use App\Notifications\SendPasswordEmail;
 use App\Notifications\DeviceVerificationEmail;
 use App\Notifications\ApiPasswordReset;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -63,13 +64,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-    public function setPasswordAttribute($value)
+
+    public function setPasswordAttribute($val)
     {
-        $this->attributes['password'] = Hash::make($value);
+        $this->attributes['password'] = Hash::make($val);
     }
-    public function sendEmailVerificationNotification()
+    public function sendPasswordNotification($val)
     {
-        $this->notify(new CustomVerifyEmail);
+        $this->notify(new SendPasswordEmail($val));
     }
     public function sendPasswordResetNotification($token)
     {

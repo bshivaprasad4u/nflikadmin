@@ -50,6 +50,7 @@ class LoginController extends ClientController
         return view('client.auth.login');
     }
 
+
     public function logout(Request $request)
     {
         $this->guard('client')->logout();

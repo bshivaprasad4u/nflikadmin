@@ -3,16 +3,14 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordBase;
 
-class DeviceVerificationEmail extends ResetPasswordBase
+class ClientPasswordEmail extends Notification implements ShouldQueue
 {
     use Queueable;
-
     public $token;
-
     /**
      * Create a new notification instance.
      *
@@ -33,30 +31,20 @@ class DeviceVerificationEmail extends ResetPasswordBase
     {
         return ['mail'];
     }
-
     /**
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    /**
-     * Build the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
     public function toMail($notifiable)
     {
-
-
         return (new MailMessage)
-            ->subject(Lang::get('Device Registration Notification'))
-            ->line(Lang::get('You are receiving this email because we received a login request from new device.'))
-            //->action(Lang::get('Reset Password'), $url)
-            ->line(Lang::get('Code: ' . $this->token))
-            //->line(Lang::get('This verification code will expire in :count minutes.'))
-            ->line(Lang::get('If you did not want to register this device, Please login from your usual device.'));
+            ->subject('Welcome to Nflik Client Dashboard')
+            // ->line('Hi Client,')
+            ->line('You can Login to your account with the password below')
+            ->line('Password : ' . $this->token)
+            ->line('Thank you for using our application!');
     }
     /**
      * Get the array representation of the notification.

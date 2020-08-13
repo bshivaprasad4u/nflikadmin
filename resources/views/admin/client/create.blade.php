@@ -60,7 +60,7 @@
                     <label class="col-form-label col-sm-4" for=""> Sub Domain</label>
                     <div class="col-sm-8">
                         <input class="form-control" placeholder="Sub Domain" type="text" name="subdomain" value="{{ old('subdomain') }}">
-                        @error('phone')
+                        @error('subdomain')
                         <div class="alert-custome">{{ $message }}</div>
                         @enderror
                     </div>
@@ -68,8 +68,8 @@
                 <div class="form-group row">
                     <label class="col-form-label col-sm-4" for=""> Slot Duration</label>
                     <div class="col-sm-8">
-                        <input class="form-control" placeholder="Slot Duration" type="text" name="slot_duration" value="{{ old('slot_duration') }}">
-                        @error('phone')
+                        <input class="form-control" placeholder="Slot Duration in minutes" type="text" name="slot_duration" value="{{ old('slot_duration') }}">
+                        @error('slot_duration')
                         <div class="alert-custome">{{ $message }}</div>
                         @enderror
                     </div>
