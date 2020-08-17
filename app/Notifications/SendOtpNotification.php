@@ -3,25 +3,23 @@
 namespace App\Notifications;
 
 use App\ApiCode;
+
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Lang;
-use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordBase;
 
-class DeviceVerificationEmail extends ResetPasswordBase
+class SendOtpNotification extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    public $token;
-
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($token)
+    public function __construct()
     {
-        $this->token = $token;
     }
 
     /**
@@ -52,12 +50,12 @@ class DeviceVerificationEmail extends ResetPasswordBase
 
 
         return (new MailMessage)
-            ->subject(Lang::get('Device Registration Notification'))
+            ->subject(Lang::get('One Time Password for Login'))
             ->line(Lang::get('You are receiving this email because we received a login request from new device.'))
             //->action(Lang::get('Reset Password'), $url)
-            ->line(Lang::get('Code: ' . $this->token))
-            ->line(Lang::get('This verification code will expire in ' . ApiCode::VERIFICATION_CODE_EXPIRY_IN_MINS . ' minutes.'))
-            ->line(Lang::get('If you did not want to register this device, Please login from your usual device.'));
+            ->line(Lang::get('Code: ' . $notifiable->otp))
+            ->line(Lang::get('This OTP will expire in ' . ApiCode::OTP_EXIPRES_IN_MINS . ' minutes.'))
+            ->line(Lang::get('If you dont want to use this OPT, You can login with.'));
     }
     /**
      * Get the array representation of the notification.

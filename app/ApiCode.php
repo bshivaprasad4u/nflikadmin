@@ -4,6 +4,10 @@ namespace App;
 
 class ApiCode
 {
+    public const VERIFICATION_CODE_EXPIRY_IN_MINS = 15;
+    public const OTP_EXIPRES_IN_MINS = 5;
+
+
     public const SOMETHING_WENT_WRONG = 250;
     public const INVALID_CREDENTIALS = 251;
     public const VALIDATION_ERROR = 252;
@@ -13,4 +17,5 @@ class ApiCode
     public const PASSWORD_RESET_LINK = 256;
     public const INVALID_PASSWORD = 257;
     public const SAME_PASSWORD_AS_OLD = 258;
+    public const OTP_EXPIRED =259;
 }

@@ -19,5 +19,6 @@ return [
     'email_already_verified' => 'You have already verified email.',
     'invalid_reset_password_token' => 'Invalid token provided.',
     'invalid_password' => 'Password provided is not matched with our records.',
-    'same_password_as_old' => 'Please enter a password which is not similar to the current password.'
+    'same_password_as_old' => 'Please enter a password which is not similar to the current password.',
+    'otp_expired' => 'OTP Expired'
 ];

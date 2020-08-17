@@ -60,11 +60,7 @@ class UserController extends ApiController
         return $this->respondWithMessage("Password changed successfully.");
     }
 
-    public function devices()
-    {
-        $devices = Device::where(['user_id' => Auth::id(), 'verfication' => ''])->get();
-        return $this->respond($devices);
-    }
+    
     public function profile_settings(Request $request)
     {
         $user = User::findOrFail(auth('api')->id());

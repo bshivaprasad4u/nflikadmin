@@ -31,7 +31,7 @@
 
                         <div class="custom-file" id="result_div">
                             <input class="form-control" id="fileupload" name="file" placeholder="Select Poster" type="file">
-                            <label class="custom-file-label" for="fileupload">Select Video</label>
+                            <label class="custom-file-label" for="fileupload">Select Photo</label>
 
                         </div>
                         @error('file')

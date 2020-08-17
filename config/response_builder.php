@@ -27,7 +27,8 @@ return [
         ApiCode::INVALID_RESET_PASSWORD_TOKEN => 'api.invalid_reset_password_token',
         ApiCode::PASSWORD_RESET_LINK => 'passwords.sent',
         ApiCode::INVALID_PASSWORD => 'api.invalid_password',
-        ApiCode::SAME_PASSWORD_AS_OLD => 'api.same_password_as_old'
+        ApiCode::SAME_PASSWORD_AS_OLD => 'api.same_password_as_old',
+        ApiCode::OTP_EXPIRED => 'api.otp_expired'
     ],
 
 ];

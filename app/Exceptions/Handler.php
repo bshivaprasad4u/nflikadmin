@@ -9,6 +9,9 @@ use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 use Illuminate\Support\Arr;
 use Illuminate\Auth\AuthenticationException;
 use Throwable;
+use Illuminate\Routing\Router;
+use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class Handler extends ExceptionHandler
 {
@@ -58,6 +61,7 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
+        dd($e);
         if (method_exists($e, 'render') && $response = $e->render($request)) {
             return Router::toResponse($request, $response);
         } elseif ($e instanceof Responsable) {
@@ -65,7 +69,6 @@ class Handler extends ExceptionHandler
         }
 
         $e = $this->prepareException($e);
-
         if ($e instanceof HttpResponseException) {
             return $e->getResponse();
         } elseif ($e instanceof AuthenticationException) {
@@ -73,6 +76,7 @@ class Handler extends ExceptionHandler
         } elseif ($e instanceof ValidationException) {
             return $this->convertValidationExceptionToResponse($e, $request);
         }
+
 
         return $request->expectsJson()
             ? $this->respondWithValidationError($request, $e)

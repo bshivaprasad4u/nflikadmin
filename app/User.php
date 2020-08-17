@@ -10,7 +10,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Notifications\SendPasswordEmail;
 use App\Notifications\DeviceVerificationEmail;
 use App\Notifications\ApiPasswordReset;
-use Illuminate\Support\Str;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -24,7 +23,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'mobile', 'dob', 'profile_image', 'profile_settings', 'country', 'state', 'city', 'zip', 'address'
+        'name', 'email', 'password', 'mobile', 'dob', 'profile_image', 'profile_settings', 'country', 'state', 'city', 'zip', 'address', 'otp', 'otp_expires_at'
     ];
 
     /**
@@ -33,7 +32,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'otp', 'otp_expires_at'
     ];
 
     /**
@@ -43,6 +42,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'otp_expires_at' => 'datetime',
     ];
 
     /**
@@ -65,6 +65,15 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+
+    public function generate_otp()
+    {
+        $this->timestamps = false;
+        $this->attributes['otp'] = rand(100000, 999999);;
+        $this->attributes['otp_expires_at'] = now()->addMinutes(ApiCode::OTP_EXIPRES_IN_MINS);
+        $this->save();
+    }
+
     public function setPasswordAttribute($val)
     {
         $this->attributes['password'] = Hash::make($val);
@@ -84,6 +93,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function devices()
     {
-        return $this->hasOne(Device::class)->whereNull('verification_code');
+        return $this->hasMany(Device::class)->whereNull('verification_code');
     }
 }
