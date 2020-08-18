@@ -93,6 +93,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function devices()
     {
-        return $this->hasMany(Device::class)->whereNull('verification_code');
+        return $this->hasMany(Device::class, 'user_id', 'id');
     }
 }

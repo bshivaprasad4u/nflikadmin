@@ -78,7 +78,7 @@ class DeviceController extends ApiController
             if ($device->updated_at->addMinutes(ApiCode::VERIFICATION_CODE_EXPIRY_IN_MINS)->lt(now())) {
                 return $this->respondWithMessage("Verification Code Expired.");
             } else {
-                $device->verification_code = '';
+                $device->verification_code = null;
                 $device->save();
                 return $this->respondWithMessage("Device Registered.");
             }
