@@ -45,7 +45,7 @@ class PaymentController extends ApiController
     public function payment_response()
     {
         //$payment = $this->api->payment->fetch(request()->razorpay_payment_id);
-        $update_payment = Payment::findOrfail(request()->order_id);
+        $update_payment = Payment::where('order_id', request()->order_id)->first();
         $update_payment->request()->razorpay_order_id;
         $update_payment->request()->razorpay_payment_id;
         $update_payment->request()->razorpay_signature;
