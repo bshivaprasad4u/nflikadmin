@@ -57,7 +57,7 @@ class PaymentController extends ApiController
         $update_payment->razorpay_payment_id = request()->razorpay_payment_id;
         $update_payment->razorpay_signature = request()->razorpay_signature;
         $update_payment->save();
-        $this->validate_signature_update_status($update_payment);
+        return $this->validate_signature_update_status($update_payment);
     }
 
     // public function update_payment_status(Payment $update_payment)
