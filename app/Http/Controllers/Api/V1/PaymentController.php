@@ -10,16 +10,18 @@ use Razorpay\Api\Api;
 
 class PaymentController extends ApiController
 {
+    protected $api;
     public function __construct()
     {
         $this->middleware('auth:api');
-        $api = new Api(env('RAZOR_KEY'), env('RAZOR_SECRET'));
+        $this->api = new Api(env('RAZOR_KEY'), env('RAZOR_SECRET'));
     }
 
 
     public function payment_initiation()
     {
         $order  = $this->api->order->create(array('receipt' => request()->item_id, 'amount' => request()->amount, 'currency' => request()->currency)); // Creates order
+        //dd($order);
         $payment_initiation_data = [
             'order_id' => $order->id,
             'item_id' => request()->item_id,
@@ -29,9 +31,11 @@ class PaymentController extends ApiController
             'user_id' => auth('api')->user()->id,
             'payment_status' => 'initiated'
         ];
+        //dd($payment_initiation_data);
         $payment = Payment::create($payment_initiation_data);
         if ($order && $payment) {
-            return $this->respond($order);
+            //dd($order);
+            return $this->respond($payment);
         } else {
             return $this->respondWithMessage("Oops something went wrong. Payment Not initiated.");
         }
