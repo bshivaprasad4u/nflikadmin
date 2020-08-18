@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\ApiCode;
 use App\Http\Controllers\Api\Controller as ApiController;
 use App\Payment;
+use Razorpay\Api\Errors\SignatureVerificationError;
 
 
 use Razorpay\Api\Api;
@@ -69,17 +70,19 @@ class PaymentController extends ApiController
 
     public function validate_signature_update_status(Payment $update_payment)
     {
-        $attrbutes  = array('razorpay_signature'  => $update_payment->razorpay_signature,  'razorpay_payment_id'  => $update_payment->razorpay_payment_id,  'razorpay_order_id' => $update_payment->order_id);
         //dd($attrbutes);
         //dd($this->api->utility->verifyPaymentSignature($attrbutes));
-        if ($this->api->utility->verifyPaymentSignature($attrbutes)) {
-            $update_payment->payment_status = 'fail';
-            $update_payment->save();
-            return $this->respondWithMessage("Payment faileed.");
-        } else {
+        try {
+            $attributes  = array('razorpay_signature'  => $update_payment->razorpay_signature,  'razorpay_payment_id'  => $update_payment->razorpay_payment_id,  'razorpay_order_id' => $update_payment->order_id);
+            $this->api->utility->verifyPaymentSignature($attributes);
             $update_payment->payment_status = 'success';
             $update_payment->save();
             return $this->respondWithMessage("Payment successful.");
+        } catch (SignatureVerificationError $e) {
+
+            $update_payment->payment_status = 'fail';
+            $update_payment->save();
+            return $this->respondWithMessage($e->getMessage());
         }
     }
 }
