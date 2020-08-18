@@ -61,7 +61,7 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
-        //dd($e);
+        dd($e);
         if (method_exists($e, 'render') && $response = $e->render($request)) {
             return Router::toResponse($request, $response);
         } elseif ($e instanceof Responsable) {
