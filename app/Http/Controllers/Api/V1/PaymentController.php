@@ -70,12 +70,13 @@ class PaymentController extends ApiController
     public function validate_signature_update_status(Payment $update_payment)
     {
         $attrbutes  = array('razorpay_signature'  => $update_payment->razorpay_signature,  'razorpay_payment_id'  => $update_payment->razorpay_payment_id,  'razorpay_order_id' => $update_payment->razorpay_order_id);
+        dd($attrbutes);
         if ($this->api->utility->verifyPaymentSignature($attrbutes)) {
             $update_payment->payment_status = 'success';
             $update_payment->save();
             return $this->respondWithMessage("Payment successful.");
         } else {
-            $update_payment->payment_status = 'failed';
+            $update_payment->payment_status = 'fail';
             $update_payment->save();
             return $this->respondWithMessage("Payment successful.");
         }
