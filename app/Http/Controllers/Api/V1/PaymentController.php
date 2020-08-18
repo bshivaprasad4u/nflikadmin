@@ -48,7 +48,7 @@ class PaymentController extends ApiController
         //$payment = $this->api->payment->fetch(request()->razorpay_payment_id);
         $order_id = request()->order_id;
         dd($order_id);
-        $update_payment = Payment::where('order_id', request()->order_id)->first();
+        $update_payment = Payment::where(['user_id' => auth()->user()->id, 'order_id' => request()->device_id])->firstOrfail();
         $update_payment->request()->razorpay_order_id;
         $update_payment->request()->razorpay_payment_id;
         $update_payment->request()->razorpay_signature;
