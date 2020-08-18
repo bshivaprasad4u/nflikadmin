@@ -6,6 +6,7 @@ use App\ApiCode;
 use App\Http\Controllers\Api\Controller as ApiController;
 use App\Payment;
 
+
 use Razorpay\Api\Api;
 
 class PaymentController extends ApiController
@@ -45,6 +46,8 @@ class PaymentController extends ApiController
     public function payment_response()
     {
         //$payment = $this->api->payment->fetch(request()->razorpay_payment_id);
+        $order_id = request()->order_id;
+        dd($order_id);
         $update_payment = Payment::where('order_id', request()->order_id)->first();
         $update_payment->request()->razorpay_order_id;
         $update_payment->request()->razorpay_payment_id;
