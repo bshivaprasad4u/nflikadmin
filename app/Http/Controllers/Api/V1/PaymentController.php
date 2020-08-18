@@ -46,22 +46,26 @@ class PaymentController extends ApiController
     public function payment_response()
     {
         //$payment = $this->api->payment->fetch(request()->razorpay_payment_id);
-        //$order_id = request()->order_id;
+        // $order_id = request()->order_id;
+        // $razorpay_payment_id = request()->razorpay_payment_id;
+        // $razorpay_order_id = request()->razorpay_order_id;
+        // $razorpay_signature = request()->razoroay_signature;
         //dd($order_id);
-        $update_payment = Payment::where(['user_id' => auth()->user()->id, 'order_id' => request()->order_id])->firstOrfail();
-        $update_payment->request()->razorpay_order_id;
-        $update_payment->request()->razorpay_payment_id;
-        $update_payment->request()->razorpay_signature;
+        $update_payment = Payment::where(['user_id' => auth('api')->user()->id, 'order_id' => request()->order_id])->firstOrfail();
+
+        $update_payment->razorpay_order_id = request()->razorpay_order_id;
+        $update_payment->razorpay_payment_id = request()->razorpay_payment_id;
+        $update_payment->razorpay_signature = request()->razorpay_signature;
         $update_payment->save();
         $this->validate_signature_update_status($update_payment);
     }
 
-    public function update_payment_status(Payment $update_payment)
-    {
-        $order_id = $update_payment->order_id;
-        $razorpay_payment_id = $update_payment->payment_id;
-        $payment_status = $this->validate_signature($order_id, $razorpay_payment_id);
-    }
+    // public function update_payment_status(Payment $update_payment)
+    // {
+    //     $order_id = $update_payment->order_id;
+    //     $razorpay_payment_id = $update_payment->payment_id;
+    //     $payment_status = $this->validate_signature($order_id, $razorpay_payment_id);
+    // }
 
     public function validate_signature_update_status(Payment $update_payment)
     {
