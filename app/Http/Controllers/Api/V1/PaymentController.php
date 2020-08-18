@@ -69,7 +69,7 @@ class PaymentController extends ApiController
 
     public function validate_signature_update_status(Payment $update_payment)
     {
-        $attrbutes  = array('razorpay_signature'  => $update_payment->razorpay_signature,  'razorpay_payment_id'  => $update_payment->razorpay_payment_id,  'razorpay_order_id' => $update_payment->razorpay_order_id);
+        $attrbutes  = array('razorpay_signature'  => $update_payment->razorpay_signature,  'razorpay_payment_id'  => $update_payment->razorpay_payment_id,  'razorpay_order_id' => $update_payment->order_id);
         //dd($attrbutes);
         dd($this->api->utility->verifyPaymentSignature($attrbutes));
         if ($this->api->utility->verifyPaymentSignature($attrbutes)) {
