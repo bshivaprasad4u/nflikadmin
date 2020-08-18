@@ -82,7 +82,7 @@ class PaymentController extends ApiController
 
             $update_payment->payment_status = 'fail';
             $update_payment->save();
-            return $this->respondWithMessage($e->getMessage());
+            return $this->respondWithMessage("Payment failed");
         }
     }
 }
