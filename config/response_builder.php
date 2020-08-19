@@ -28,7 +28,9 @@ return [
         ApiCode::PASSWORD_RESET_LINK => 'passwords.sent',
         ApiCode::INVALID_PASSWORD => 'api.invalid_password',
         ApiCode::SAME_PASSWORD_AS_OLD => 'api.same_password_as_old',
-        ApiCode::OTP_EXPIRED => 'api.otp_expired'
+        ApiCode::OTP_EXPIRED => 'api.otp_expired',
+        ApiCode::DATA_NOT_FOUND => 'api.data_not_found',
+        ApiCode::INVALID_CREDENTIALS_OTP => 'api.invalid_credentials_otp',
     ],
 
 ];

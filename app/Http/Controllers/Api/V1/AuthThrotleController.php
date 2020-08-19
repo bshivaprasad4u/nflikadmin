@@ -9,14 +9,18 @@ use App\Notifications\SendOtpNotification;
 use Exception;
 //use Jenssegers\Agent\Agent;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
 
 
 
 
 class AuthController extends ApiController
 {
-    use AuthenticatesUsers;
+    // use AuthenticatesUsers, ThrottlesLogins;
+    use ThrottlesLogins;
     protected $username;
+    protected $maxAttempts = 5;
+    protected $decayMinutes = 5;
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'send_otp']]);
@@ -44,12 +48,20 @@ class AuthController extends ApiController
 
     public function login()
     {
+        if (
+            method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts(request())
+        ) {
+            $this->fireLockoutEvent(request());
+            return $this->sendLockoutResponse(request());
+        }
         if (request()->has('otp')) {
             if (is_numeric(request()->username)) {
                 $credentials = request()->validate(['mobile' => 'required|integer:10', 'otp' => 'required']);
             } else {
                 $credentials = request()->validate(['email' => 'required|email', 'otp' => 'required']);
             }
+
             try {
                 $user = User::where($credentials)->firstOrfail();
                 if ($user->otp == request()->otp && $user->otp_expires_at->gt(now())) {
@@ -65,6 +77,7 @@ class AuthController extends ApiController
                     return $this->respondUnAuthorizedRequest(ApiCode::OTP_EXPIRED);
                 }
             } catch (Exception $e) {
+                $this->incrementLoginAttempts(request());
                 return $this->respondUnAuthorizedRequest(ApiCode::INVALID_CREDENTIALS);
             }
         } else {
@@ -73,10 +86,8 @@ class AuthController extends ApiController
             } else {
                 $credentials = request()->validate(['email' => 'required|email', 'password' => 'required']);
             }
-            //dd($credentials);
-            //$user = User::where($this->credentials())->firstOrfail();
-            //dd($user);
             if (!$token = auth()->attempt($credentials)) {
+                $this->incrementLoginAttempts(request());
                 return $this->respondUnAuthorizedRequest(ApiCode::INVALID_CREDENTIALS);
             }
         }

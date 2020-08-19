@@ -2,16 +2,15 @@
 
 namespace App\Exceptions;
 
-use App\ApiCode;
-use Illuminate\Validation\ValidationException;
+//use App\ApiCode;
+//use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
+use MarcinOrlowski\ResponseBuilder\ExceptionHandlerHelper;
 use Illuminate\Support\Arr;
 use Illuminate\Auth\AuthenticationException;
 use Throwable;
-use Illuminate\Routing\Router;
-use Illuminate\Contracts\Support\Responsable;
-use Illuminate\Http\Exceptions\HttpResponseException;
+
+
 
 class Handler extends ExceptionHandler
 {
@@ -48,47 +47,22 @@ class Handler extends ExceptionHandler
     }
 
 
-    /**
-     * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $exception
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @throws \Throwable
-     */
-
-
-    public function render($request, Throwable $e)
+    public function render($request, Throwable $exception)
     {
-        //dd($e);
-        if (method_exists($e, 'render') && $response = $e->render($request)) {
-            return Router::toResponse($request, $response);
-        } elseif ($e instanceof Responsable) {
-            return $e->toResponse($request);
-        }
-
-        $e = $this->prepareException($e);
-        if ($e instanceof HttpResponseException) {
-            return $e->getResponse();
-        } elseif ($e instanceof AuthenticationException) {
-            return $this->unauthenticated($request, $e);
-        } elseif ($e instanceof ValidationException) {
-            return $this->convertValidationExceptionToResponse($e, $request);
-        }
-
-
-        return $request->expectsJson()
-            ? $this->respondWithValidationError($request, $e)
-            : $this->prepareResponse($request, $e);
+        //dd($exception);
+        if ($request->expectsJson())
+            return ExceptionHandlerHelper::render($request, $exception);
+        else
+            return parent::render($request, $exception);;
     }
 
     private function respondWithValidationError($exception)
     {
-        return ResponseBuilder::asError(ApiCode::VALIDATION_ERROR)
-            ->withData($exception->errors())
-            ->withHttpCode(422)
-            ->build();
+        // return ResponseBuilder::asError(ApiCode::VALIDATION_ERROR)
+        //     ->withData($exception->errors())
+        //     ->withHttpCode(422)
+        //     ->build();
+        // return ExceptionHandlerHelper::render($request, $e);
     }
 
     /**
