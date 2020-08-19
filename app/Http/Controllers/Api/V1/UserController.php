@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Api\V1;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\Controller as ApiController;
 use Illuminate\Support\Facades\Storage;
-use App\Device;
+use App\ApiCode;
 use App\User;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,28 +46,34 @@ class UserController extends ApiController
                 // 'confirm_password' => 'requeired|string'
             ]
         );
-        $user = User::findOrFail(auth('api')->id());
-        if ((Hash::check(request('current_password'), $user->password)) == false) {
-            return $this->respondWithError('257', 401);
-        } else
+        try {
+            $user = User::findOrFail(auth('api')->id());
+            if ((Hash::check(request('current_password'), $user->password)) == false) {
+                return $this->respondWithError('257', 401);
+            } else
         if ((Hash::check(request('password'), $user->password)) == true) {
-            return $this->respondWithError('258', 401);
-        } else {
-            $password = ['password' => request('password')];
-            auth('api')->user()->update($password);
+                return $this->respondWithError('258', 401);
+            } else {
+                $password = ['password' => request('password')];
+                auth('api')->user()->update($password);
+            }
+            return $this->respondWithMessage("Password changed successfully.");
+        } catch (Exception $e) {
+            return $this->respondWithError(ApiCode::DATA_NOT_FOUND, 404);
         }
-
-
-        return $this->respondWithMessage("Password changed successfully.");
     }
 
-    
+
     public function profile_settings(Request $request)
     {
-        $user = User::findOrFail(auth('api')->id());
-        //dd($user);
-        $user->update(['profile_settings' => json_encode($request->all())]);
-        return $this->respondWithMessage('Profile settings updated successfully.');
+        try {
+            $user = User::findOrFail(auth('api')->id());
+            //dd($user);
+            $user->update(['profile_settings' => json_encode($request->all())]);
+            return $this->respondWithMessage('Profile settings updated successfully.');
+        } catch (Exception $e) {
+            return $this->respondWithError(ApiCode::DATA_NOT_FOUND, 404);
+        }
     }
     public function profile_image(Request $request)
     {

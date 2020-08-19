@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\ApiCode;
 use App\Http\Controllers\Api\Controller as ApiController;
 use App\Payment;
+use Exception;
 use Razorpay\Api\Errors\SignatureVerificationError;
 
 
@@ -47,13 +48,17 @@ class PaymentController extends ApiController
     public function payment_response()
     {
         //$payment = $this->api->payment->fetch(request()->razorpay_payment_id);
-        $update_payment = Payment::where(['user_id' => auth('api')->user()->id, 'order_id' => request()->order_id])->firstOrfail();
+        try {
+            $update_payment = Payment::where(['user_id' => auth('api')->user()->id, 'order_id' => request()->order_id])->firstOrfail();
 
-        $update_payment->razorpay_order_id = request()->razorpay_order_id;
-        $update_payment->razorpay_payment_id = request()->razorpay_payment_id;
-        $update_payment->razorpay_signature = request()->razorpay_signature;
-        $update_payment->save();
-        return $this->validate_signature_update_status($update_payment);
+            $update_payment->razorpay_order_id = request()->razorpay_order_id;
+            $update_payment->razorpay_payment_id = request()->razorpay_payment_id;
+            $update_payment->razorpay_signature = request()->razorpay_signature;
+            $update_payment->save();
+            return $this->validate_signature_update_status($update_payment);
+        } catch (Exception $e) {
+            return $this->respondWithError(ApiCode::DATA_NOT_FOUND, 404);
+        }
     }
 
     // public function update_payment_status(Payment $update_payment)

@@ -64,10 +64,14 @@ class DeviceController extends ApiController
     {
         //$user = auth()->user();
         //dd(auth()->user()->id);
-        $device = Device::where(['user_id' => auth()->user()->id, 'device_id' => $request->device_id])->firstOrfail();
-        $device->generate_verification_code();
-        auth('api')->user()->notify(new DeviceVerificationEmail($device->verification_code));
-        return $this->respondWithMessage("Device Verification Code sent.");
+        try {
+            $device = Device::where(['user_id' => auth()->user()->id, 'device_id' => $request->device_id])->firstOrfail();
+            $device->generate_verification_code();
+            auth('api')->user()->notify(new DeviceVerificationEmail($device->verification_code));
+            return $this->respondWithMessage("Device Verification Code sent.");
+        } catch (Exception $e) {
+            return $this->respondWithError(ApiCode::DATA_NOT_FOUND, 404);
+        }
     }
 
     public function device_verify(Request $request)
@@ -78,23 +82,23 @@ class DeviceController extends ApiController
         //echo $computerId;
         //exit;
         //$user = auth()->user();
-        //try {
-        $device = Device::where(['user_id' => auth()->user()->id, 'device_id' => $request->device_id])->firstOrfail();
-        if ($device->verification_code == $request->verification_code) {
+        try {
+            $device = Device::where(['user_id' => auth()->user()->id, 'device_id' => $request->device_id])->firstOrfail();
+            if ($device->verification_code == $request->verification_code) {
 
-            if ($device->updated_at->addMinutes(ApiCode::VERIFICATION_CODE_EXPIRY_IN_MINS)->lt(now())) {
-                return $this->respondWithMessage("Verification Code Expired.");
+                if ($device->updated_at->addMinutes(ApiCode::VERIFICATION_CODE_EXPIRY_IN_MINS)->lt(now())) {
+                    return $this->respondWithMessage("Verification Code Expired.");
+                } else {
+                    $device->verification_code = null;
+                    $device->save();
+                    return $this->respondWithMessage("Device Registered.");
+                }
             } else {
-                $device->verification_code = null;
-                $device->save();
-                return $this->respondWithMessage("Device Registered.");
+                return $this->respondWithMessage("Verification Code Not Matched.");
             }
-        } else {
-            return $this->respondWithMessage("Verification Code Not Matched.");
+        } catch (Exception $e) {
+            return $this->respondWithError(ApiCode::DATA_NOT_FOUND, 404);
         }
-        // } catch (Exception $e) {
-        //     return $this->respondWithError(ApiCode::DATA_NOT_FOUND, 404);
-        // }
     }
 
     function UniqueMachineID($salt = "")
