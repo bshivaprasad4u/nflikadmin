@@ -19,7 +19,7 @@
                 <div class="form-group row required">
                     <label class="col-form-label col-sm-4" for=""> Category</label>
                     <div class="col-sm-8">
-                        <select class="form-control" name="category">
+                        <select class="form-control select2bs4" name="category">
                             @foreach($categories as $sub):
                             <option value="{{$sub->id}}" {{($content->category_id == $sub->id)?'Selected':''}}>
                                 {{ ucfirst($sub->name) }}
@@ -92,7 +92,7 @@
                     <div class="col-sm-8">
                         <?php $tags = ($content->tags) ? implode(',', json_decode($content->tags)) : '';
                         ?>
-                        <input data-role="tagsinput" class="form-control" placeholder="Enter , seperated Tags" type="text" name="tags" value="{{ old('tags') ?? $tags }}">
+                        <input data-role="tagsinput" class="form-control" placeholder="Enter , seperated Tags" type="text" name="tags" value="{{ old('tags') ?? $tags }}" data-role="tagsinput">
                         @error('tags')
                         <div class="alert-custome">{{ $message }}</div>
                         @enderror
@@ -103,7 +103,7 @@
                     <div class="col-sm-8">
                         <?php $display_tags = ($content->display_tags) ? implode(',', json_decode($content->display_tags)) : '';
                         ?>
-                        <input class="form-control" placeholder="Enter , seperated Display Tags" type="text" name="display_tags" value="{{ old('display_tags')?? $display_tags }}">
+                        <input class="form-control" placeholder="Enter , seperated Display Tags" type="text" name="display_tags" value="{{ old('display_tags')?? $display_tags }}" data-role="tagsinput">
                         @error('display_tags')
                         <div class="alert-custome">{{ $message }}</div>
                         @enderror
@@ -131,7 +131,7 @@
                 <div class="form-group row">
                     <label class="col-form-label col-sm-4" for=""> Description</label>
                     <div class="col-sm-8">
-                        <textarea class="form-control" rows="3" name="description" placeholder="Enter Description here....">{{ old('description')??$content->description }}</textarea>
+                        <textarea class="form-control" rows="3" id="description" name="description" placeholder="Enter Description here....">{{ old('description')??$content->description }}</textarea>
                         @error('description')
                         <div class="alert-custome">{{ $message }}</div>
                         @enderror
@@ -140,6 +140,7 @@
 
             </div>
             <div class="card-footer">
+                <a href="{{ route('client.contents.view',$content->id) }}"><button type="button" class="btn btn-default float-right ml-3">Cancel</button></a>
                 <button class="btn btn-primary float-right" type="submit"> Submit</button>
             </div>
         </div>
@@ -147,6 +148,8 @@
 </section>
 @endsection
 @section('script')
+<script src="{{ asset('adminlte/tags/bootstrap-tagsinput.js') }}"></script>
+<script src="{{ asset('adminlte/ckeditor/ckeditor/ckeditor.js')}}"></script>
 <script>
     $(function() {
 
@@ -156,6 +159,8 @@
             //replace the "Choose a file" label
             $(this).next('.custom-file-label').html(fileName);
         });
+        //$('.select2bs4').select2();
+        CKEDITOR.replace('description');
     });
 </script>
 @endsection

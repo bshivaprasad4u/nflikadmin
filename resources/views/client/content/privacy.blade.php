@@ -16,22 +16,21 @@
             @csrf
             <div class="card-body">
                 <?php
-
-
-                if ($content->privacy_parameters) {
-
-                    $privacy_settings = json_decode($content->privacy_parameters);
+                if ($content->privacy_settings) {
+                    $privacy_settings = json_decode($content->privacy_settings);
                     $comments = $privacy_settings->Allow_Comments;
                     $ratings = $privacy_settings->Allow_Ratings;
                     $child = $privacy_settings->Allow_Child;
-                    $origins = implode(',', $privacy_settings->Restricted_Origins);
+                    $origins = $privacy_settings->Restricted_Origins;
                 } else {
                     $comments = 'no';
                     $ratings = 'no';
                     $child = 'no';
                     $origins = '';
                 }
+
                 ?>
+
                 <div id="privacy_settings_div">
                     <div class="form-group row required">
                         <label class="col-form-label col-sm-4" for="">Allow Comments</label>
@@ -57,7 +56,16 @@
                     <div class="form-group row required">
                         <label class="col-form-label col-sm-4" for="">Restricted Origins</label>
                         <div class="col-sm-8">
-                            <input class="form-control" name="origins" placeholder="Enter Countries to restrict access" type="text" value="{{ (old('origns')) ?? $origins }}">
+                            <select class="select2" name="origins[]" multiple="multiple" data-placeholder="Select Countries to restrict access" style="width: 100%;">
+                                @foreach($countries as $country)
+                                @if(in_array($country, $origins))
+                                <option value="{{ $country }}" selected="true">{{ $country }}</option>
+                                @else
+                                <option value="{{ $country }}">{{ $country }}</option>
+                                @endif
+                                @endforeach
+                            </select>
+
                             @error('name')
                             <div class="alert-custome">{{ $message }}</div>
                             @enderror
@@ -67,10 +75,20 @@
                 </div>
             </div>
             <div class="card-footer">
-                <a href="{{ URL::previous() }}"><button type="button" class="btn btn-default float-right ml-3">Cancel</button></a>
+                <a href="{{ route('client.contents.view',$content->id) }}"><button type="button" class="btn btn-default float-right ml-3">Cancel</button></a>
                 <button class="btn btn-primary float-right" type="submit"> Submit</button>
             </div>
         </form>
     </div>
 </section>
+@endsection
+@section('script')
+<script src="{{ asset('adminlte/tags/bootstrap-tagsinput.js') }}"></script>
+<script src="{{ asset('adminlte/select2/js/select2.js') }}"></script>
+<script>
+    $(function() {
+        // console.log(<?php echo json_encode($countries); ?>);
+        $('.select2').select2();
+    });
+</script>
 @endsection

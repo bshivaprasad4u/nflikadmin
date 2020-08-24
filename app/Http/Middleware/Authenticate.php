@@ -22,7 +22,7 @@ class Authenticate extends Middleware
             } elseif (Route::is('client.*')) {
                 return route('client.login');
             } else {
-                #return route('login');
+                //return route('login');
             }
         }
     }

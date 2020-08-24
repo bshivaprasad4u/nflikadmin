@@ -15,6 +15,7 @@ use App\ContentMonetize;
 use App\Settings;
 use App\Teaser;
 use App\Photo;
+use App\Rules\FilenameRule;
 
 class ContentController extends Controller
 {
@@ -91,7 +92,7 @@ class ContentController extends Controller
                 'category' => ['required'],
                 'name' => ['required', 'string', 'max:255'],
                 //'videofile' => 'sometimes|nullable|mimes:mpeg,ogg,mp4,webm,3gp,mov,flv,avi,wmv,ts|max:' . config('constants.MAX_VIDEO_UPLOAD_SIZE'),
-                'file' => 'required|mimes:png,PNG,jpg,JPG,jpeg,JPEG|max:' . config('constants.MAX_FILE_UPLOAD_SIZE'),
+                'file' => ['required', 'mimes:png,PNG,jpg,JPG,jpeg,JPEG', 'max:' . config('constants.MAX_FILE_UPLOAD_SIZE'), new FilenameRule()],
                 'language' => ['required', 'string'],
                 'genres' => ['required', 'string'],
                 'artist' => ['required', 'string'],
@@ -105,10 +106,10 @@ class ContentController extends Controller
             $image_name = time() . '_' . $image->getClientOriginalName();
             //$image_path = $request->file('file')->storeAs('uploads', $image_name);
             $image_path = 'banner_images/' . $image_name;
-            Storage::disk('s3')->put($image_path, file_get_contents($image));
+            Storage::disk('s3')->put($image_path, \fopen($image, 'r+'));
         }
-        $tags = ($request->tags) ? explode(',', $request->tags) : '';
-        $display_tags = ($request->display_tags) ? explode(',', $request->display_tags) : '';
+        $tags = ($request->tags) ? json_encode(explode(',', $request->tags)) : null;
+        $display_tags = ($request->display_tags) ? json_encode(explode(',', $request->display_tags)) : null;
 
         $save_data = [
             'category_id' => $request->category,
@@ -118,8 +119,8 @@ class ContentController extends Controller
             'genres' => $request->genres,
             //'content_link' => ($video_path) ?? '',
             //'format' => ($video_extension) ?? '',
-            'tags' => json_encode($tags),
-            'display_tags' => json_encode($display_tags),
+            'tags' => $tags,
+            'display_tags' => $display_tags,
             'client_id' => $this->client(),
             'artist' => $request->artist,
             'castandcrew' => $request->castandcrew,
@@ -170,7 +171,7 @@ class ContentController extends Controller
                 'category' => ['required'],
                 'name' => ['required', 'string', 'max:255'],
                 //'videofile' => 'sometimes|nullable|mimes:mpeg,ogg,mp4,webm,3gp,mov,flv,avi,wmv,ts|max:' . config('constants.MAX_VIDEO_UPLOAD_SIZE'),
-                'file' => 'sometimes|nullable|mimes:png,PNG,jpg,JPG,jpeg,JPEG|max:' . config('constants.MAX_FILE_UPLOAD_SIZE'),
+                'file' => ['sometimes', 'nullable', 'mimes:png,PNG,jpg,JPG,jpeg,JPEG', 'max:' . config('constants.MAX_FILE_UPLOAD_SIZE'), new FilenameRule],
                 'language' => ['required', 'string'],
                 'genres' => ['required', 'string'],
                 'artist' => ['required', 'string'],
@@ -184,12 +185,12 @@ class ContentController extends Controller
             $image_name = time() . '_' . $image->getClientOriginalName();
             //$image_path = $request->file('file')->storeAs('uploads', $image_name);
             $image_path = 'banner_images/' . $image_name;
-            Storage::disk('s3')->put($image_path, file_get_contents($image));
+            Storage::disk('s3')->put($image_path, \fopen($image, 'r+'));
         }
 
         //print($duration);
-        $tags = ($request->tags) ? explode(',', $request->tags) : '';
-        $display_tags = ($request->display_tags) ? explode(',', $request->display_tags) : '';
+        $tags = ($request->tags) ? json_encode(explode(',', $request->tags)) : null;
+        $display_tags = ($request->display_tags) ? json_encode(explode(',', $request->display_tags)) : null;
 
         $save_data = [
             'category_id' => $request->category,
@@ -198,8 +199,8 @@ class ContentController extends Controller
             'genres' => $request->genres,
             //'content_link' => ($video_path) ?? '',
             //'format' => ($video_extension) ?? '',
-            'tags' => json_encode($tags),
-            'display_tags' => json_encode($display_tags),
+            'tags' => $tags,
+            'display_tags' => $display_tags,
             //'client_id' => $this->client(),
             'artist' => $request->artist,
             'castandcrew' => $request->castandcrew,
@@ -232,6 +233,12 @@ class ContentController extends Controller
     public function video_store(Request $request, $id)
     {
         $data['page_title'] = 'Add Video';
+        $validationData = $request->validate(
+            [
+                //'videofile' => 'sometimes|nullable|mimes:mpeg,ogg,mp4,webm,3gp,mov,flv,avi,wmv,ts|max:' . config('constants.MAX_VIDEO_UPLOAD_SIZE'),
+                'videofile' => ['sometimes', 'nullable', 'mimes:mpeg,ogg,mp4,webm,3gp,mov,flv,avi,wmv,ts', 'max:' . config('constants.MAX_VIDEO_UPLOAD_SIZE'), new FilenameRule],
+            ]
+        );
         if ($request->hasfile('videofile')) {
             $video = $request->file('videofile');
             $video_name = time() . '_' . $video->getClientOriginalName();
@@ -269,7 +276,7 @@ class ContentController extends Controller
         $data['content'] = Content::findorfail($id);
         $this->authorize('view', $data['content']);
         $data['page_title'] = 'Content Details';
-        $data['countries'] = Settings::COUNTRIES;
+        //$data['countries'] = Settings::COUNTRIES;
         //$data['privacy_settings'] = json_decode($data['content']->privacy_settings);
         return view('client.content.view', $data);
     }
@@ -291,11 +298,12 @@ class ContentController extends Controller
 
     public function privacy_store(Request $request, $id)
     {
+        //dd($request->origins);
         $privacy_data = [
             'Allow_Comments' => $request->comments,
             'Allow_Ratings' => $request->ratings,
             'Allow_Child' => $request->child,
-            'Restricted_Origins' => explode(',', $request->origins)
+            'Restricted_Origins' => $request->origins
         ];
         // dd($privacy_data);
         $save_data = ['privacy_settings' => json_encode($privacy_data)];
@@ -328,7 +336,7 @@ class ContentController extends Controller
         $validationData = $request->validate(
             [
                 'name' => ['required', 'string', 'max:255'],
-                'videofile' => 'required|mimes:mpeg,ogg,mp4,webm,3gp,mov,flv,avi,wmv,ts|max:' . config('constants.MAX_TEASER_UPLOAD_SIZE'),
+                'videofile' => ['required', 'mimes:mpeg,ogg,mp4,webm,3gp,mov,flv,avi,wmv,ts', 'max:' . config('constants.MAX_TEASER_UPLOAD_SIZE'), new FilenameRule],
                 'description' => ['required', 'string'],
             ]
         );
@@ -359,6 +367,43 @@ class ContentController extends Controller
         }
     }
 
+    public function teaser_status($id)
+    {
+        // $data['page_title'] = 'Add Poster';
+        $data['content'] = Teaser::findorfail($id);
+        $content_id = $data['content']['content_id'];
+        if ($data['content']['status'] == 'active')
+            $status = 'inactive';
+        else
+            $status = 'active';
+
+        $save_data = [
+            'status' => $status,
+            'updated_by' => Auth::id(),
+        ];
+        //dd($save_data);
+        $teaser = Teaser::whereId($id)->update($save_data);
+        if ($teaser) {
+            return redirect('client/contents/view/' . $content_id)->with('success', "Teaser Updated Successfully.");
+        } else {
+            return redirect('client/contents/view/' . $content_id)->with('failure', "Oops! Teaser Not updated.");
+        }
+    }
+    public function teaser_delete($id)
+    {
+        //$data['page_title'] = 'Add Poster';
+        $data['content'] = Teaser::findorfail($id);
+        $content_id = $data['content']['content_id'];
+
+        //dd($save_data);
+        $teaser = Teaser::whereId($id)->delete();
+        if ($teaser) {
+            return redirect('client/contents/view/' . $content_id)->with('failure', "Teaser Deleted Successfully.");
+        } else {
+            return redirect('client/contents/view/' . $content_id)->with('failure', "Oops! Teaser Not deleted.");
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -379,7 +424,7 @@ class ContentController extends Controller
         $validationData = $request->validate(
             [
                 'name' => ['required', 'string', 'max:255'],
-                'file' => 'required|mimes:png,PNG,jpg,JPG,jpeg,JPEG|max:' . config('constants.MAX_FILE_UPLOAD_SIZE'),
+                'file' => ['required', 'mimes:png,PNG,jpg,JPG,jpeg,JPEG', 'max:' . config('constants.MAX_FILE_UPLOAD_SIZE'), new FilenameRule],
                 'description' => ['required', 'string'],
             ]
         );
@@ -408,6 +453,44 @@ class ContentController extends Controller
             return redirect('client/contents/view/' . $id)->with('failure', "Oops! Poster Not added.");
         }
     }
+
+    public function poster_status($id)
+    {
+        $data['page_title'] = 'Add Poster';
+        $data['content'] = Photo::findorfail($id);
+        $content_id = $data['content']['content_id'];
+        if ($data['content']['status'] == 'active')
+            $status = 'inactive';
+        else
+            $status = 'active';
+
+        $save_data = [
+            'status' => $status,
+            'updated_by' => Auth::id(),
+        ];
+        //dd($save_data);
+        $poster = Photo::whereId($id)->update($save_data);
+        if ($poster) {
+            return redirect('client/contents/view/' . $content_id)->with('success', "Poster Updated Successfully.");
+        } else {
+            return redirect('client/contents/view/' . $content_id)->with('failure', "Oops! Poster Not updated.");
+        }
+    }
+    public function poster_delete($id)
+    {
+        $data['page_title'] = 'Add Poster';
+        $data['content'] = Photo::findorfail($id);
+        $content_id = $data['content']['content_id'];
+
+        //dd($save_data);
+        $poster = Photo::whereId($id)->delete();
+        if ($poster) {
+            return redirect('client/contents/view/' . $content_id)->with('failure', "Poster Deleted Successfully.");
+        } else {
+            return redirect('client/contents/view/' . $content_id)->with('failure', "Oops! Poster Not deleted.");
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -429,7 +512,7 @@ class ContentController extends Controller
             [
                 'price' => ['required', 'numeric'],
                 'currency' => ['required', 'string'],
-                'file' => 'required|mimes:png,PNG,jpg,JPG,jpeg,JPEG|max:' . config('constants.MAX_FILE_UPLOAD_SIZE'),
+                'file' => ['required', 'mimes:png,PNG,jpg,JPG,jpeg,JPEG', 'max:' . config('constants.MAX_FILE_UPLOAD_SIZE'), new FilenameRule],
                 //'description' => ['required', 'string'],
             ]
         );
@@ -483,7 +566,7 @@ class ContentController extends Controller
             [
                 'price' => ['required', 'numeric'],
                 'currency' => ['required', 'string'],
-                'file' => 'sometimes|nullable|mimes:png,PNG,jpg,JPG,jpeg,JPEG|max:' . config('constants.MAX_FILE_UPLOAD_SIZE'),
+                'file' => ['sometimes', 'nullable', 'mimes:png,PNG,jpg,JPG,jpeg,JPEG', 'max:' . config('constants.MAX_FILE_UPLOAD_SIZE'), new FilenameRule],
                 //'description' => ['required', 'string'],
             ]
         );
@@ -510,7 +593,9 @@ class ContentController extends Controller
         $poster = ContentMonetize::whereId($id)->update($save_data);
         if ($request->makeitfree == 'yes') {
             $content = Content::whereId($request->content_id)->update(['monetize' => 'no']);
-            ContentMonetize::destroy($id);
+            $monetize = ContentMonetize::findorfail($id); // fetch the note
+            $monetize->delete(); //delete the fetched note
+            // ContentMonetize::destroy($id);
         }
         if ($poster) {
             return redirect('client/contents/view/' . $request->content_id)->with('success', "Monetized  Successfully.");
@@ -573,5 +658,61 @@ class ContentController extends Controller
 
 
 
+    }
+
+    public function unpublish($id)
+    {
+        $data['content'] = Content::findorfail($id);
+        $client = $data['content']->client;
+        $channel = $client->channel;
+        $content = ChannelContent::where(['channel_id' => $channel['id'], 'content_id' => $data['content']['id']])->firstorfail();
+        $content->updated_by = Auth::id();
+        $content->delete();
+        //dd($content);
+        if ($content) {
+            $update_data = ['publish' => 'no'];
+            Content::whereId($id)->update($update_data);
+            return redirect('client/contents/view/' . $id)->with('success', "Content UnPublished Successfully.");
+        } else {
+            return redirect('client/contents/view/' . $id)->with('failure', "Oops! Something went wrong.");
+        }
+    }
+
+    public function delete($id)
+    {
+
+        $data['content'] = Content::findOrFail($id);
+        // dd($data['content']);
+        $client = $data['content']->client;
+        $channel = $client->channel;
+        //dd($channel);
+        $channel_content = ChannelContent::where(['channel_id' => $channel['id'], 'content_id' => $data['content']['id']])->first();
+        //dd($channel_content);
+        if ($channel_content) {
+            $channel_content->updated_by = Auth::id();
+            $channel_content->delete();
+        }
+
+
+        //$content = Content::whereId($id)->update(['monetize' => 'no']);
+        $monetize = ContentMonetize::where('content_id', $data['content']['id'])->find(); // fetch the note
+        if ($monetize) {
+            $monetize->updated_by = Auth::id();
+            $monetize->delete(); //delete the fetched note
+        }
+
+
+        $photos = $data['content']->photos()->delete();
+        $teasers = $data['content']->teasers()->delete();
+
+        $update_data = ['publish' => 'no', 'monetize' => 'no'];
+        $content_record = Content::whereId($id)->update($update_data);
+        $content_delete = Content::whereId($id)->delete();
+        //dd($content);
+        if ($content_delete) {
+            return redirect('client/contents/')->with('failure', "Content Deleted Successfully.");
+        } else {
+            return redirect('client/contents/view/' . $id)->with('failure', "Oops! Something went wrong.");
+        }
     }
 }

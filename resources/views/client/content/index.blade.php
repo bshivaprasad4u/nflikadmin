@@ -21,7 +21,7 @@
                             <th>Publish</th>
                             <th>Go Live</th>
                             <th>Monetize</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -51,13 +51,13 @@
                                 <span class="badge badge-info"> No</span>
                                 @endif
                             </td>
-                            <td class="text-center">
+                            <!-- <td class="text-center">
                                 @if($content->status == 'active')
                                 <span class="badge badge-success"> Active</span>
                                 @else
                                 <span class="badge badge-info"> Inactive</span>
                                 @endif
-                            </td>
+                            </td> -->
                             <td class="project-actions text-right">
                                 <!-- <a class="btn btn-info btn-sm" href="">
                                             <i class="fas fa-pencil-alt">
@@ -90,6 +90,7 @@
 
 @endsection
 @section('script')
+
 <script>
     $(function() {
         $('#example2').DataTable({
@@ -104,7 +105,7 @@
                 null,
                 null,
                 null,
-                null,
+                //null,
                 {
                     "orderable": false
                 },

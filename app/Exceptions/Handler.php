@@ -9,8 +9,9 @@ use MarcinOrlowski\ResponseBuilder\ExceptionHandlerHelper;
 use Illuminate\Support\Arr;
 use Illuminate\Auth\AuthenticationException;
 use Throwable;
-
-
+use Illuminate\Session\TokenMismatchException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Illuminate\Support\Facades\Route;
 
 class Handler extends ExceptionHandler
 {
@@ -52,8 +53,18 @@ class Handler extends ExceptionHandler
         //dd($exception);
         if ($request->expectsJson())
             return ExceptionHandlerHelper::render($request, $exception);
-        else
-            return parent::render($request, $exception);;
+        else {
+            if ($exception instanceof TokenMismatchException) {
+
+                if (Route::is('admin.*')) {
+                    return route('admin.login');
+                } elseif (Route::is('client.*')) {
+                    return route('client.login');
+                }
+                // return redirect('/');
+            }
+            return parent::render($request, $exception);
+        }
     }
 
     private function respondWithValidationError($exception)
@@ -86,7 +97,7 @@ class Handler extends ExceptionHandler
                 $login = 'client.login';
                 break;
             default:
-                $login = 'login';
+                $login = 'admin.login';
                 break;
         }
 

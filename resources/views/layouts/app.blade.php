@@ -14,6 +14,7 @@
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
       @include('adminlte.includes.pageheader')
+      @include('adminlte.includes.modal')
       @include('adminlte.includes.error_messages')
       <!-- /.content-header -->
 
@@ -34,6 +35,7 @@
   @include('adminlte.includes.foot')
   @yield('script')
   @yield('menuscript')
+  @yield('deletescript')
 
 </body>
 

@@ -45,6 +45,7 @@
             //replace the "Choose a file" label
             $(this).next('.custom-file-label').html(fileName);
         });
+
         $('.file-upload').each(function() {
             var $this = $(this);
             var $parent = $(this).parent();
@@ -67,7 +68,7 @@
                 }
             }).on('fileuploadprogress', function(e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
-                console.log(progress);
+                //console.log(progress);
                 $('.progress-bar').show().css(
                     'width',
                     progress + '%'

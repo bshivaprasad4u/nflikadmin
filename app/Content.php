@@ -7,9 +7,11 @@ use App\Category;
 use App\Teaser;
 use App\Photo;
 use App\ContentMonetize;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Content extends Model
 {
+    use SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *
@@ -18,7 +20,7 @@ class Content extends Model
     protected $fillable = [
         'name', 'category_id',  'artist', 'castandcrew', 'description', 'banner_image', 'content_link', 'format', 'client_id', 'status', 'publish', 'monetize', 'language', 'genres', 'tags', 'display_tags', 'privacy_settings', 'go_live_status', 'go_live_date', 'created_by', 'updated_by'
     ];
-
+    protected $dates = ['deleted_at'];
 
     public function category()
     {

@@ -31,7 +31,7 @@
                         <select class="form-control" name="currency">
                             <?php sort($currencies); ?>
                             @foreach($currencies as $currency):
-                            <option value="{{$currency}}">
+                            <option value="{{$currency}}" {{ (old('currency') == $currency)?'Selected':''}}>
                                 {{ ucfirst($currency) }}
                             </option>
                             @endforeach
@@ -59,7 +59,7 @@
 
             </div>
             <div class="card-footer">
-                <a href="{{ URL::previous() }}"><button type="button" class="btn btn-default float-right ml-3">Cancel</button></a>
+                <a href="{{ route('client.contents.view',$content->id) }}"><button type="button" class="btn btn-default float-right ml-3">Cancel</button></a>
                 <button class="btn btn-primary float-right" type="submit"> Submit</button>
             </div>
         </form>
