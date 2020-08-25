@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 
 
 
-class AuthController extends ApiController
+class AuthThrotleController extends ApiController
 {
     // use AuthenticatesUsers, ThrottlesLogins;
     use ThrottlesLogins;
