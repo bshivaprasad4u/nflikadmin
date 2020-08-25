@@ -39,11 +39,13 @@ class ClientPasswordEmail extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $url = url(route('client.login'));
         return (new MailMessage)
             ->subject('Welcome to Nflik Client Dashboard')
             // ->line('Hi Client,')
             ->line('You can Login to your account with the password below')
             ->line('Password : ' . $this->token)
+            ->line('Dashboard URL:' . $url)
             ->line('Thank you for using our application!');
     }
     /**
