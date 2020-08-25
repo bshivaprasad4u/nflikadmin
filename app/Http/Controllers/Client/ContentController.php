@@ -695,7 +695,7 @@ class ContentController extends Controller
 
 
         //$content = Content::whereId($id)->update(['monetize' => 'no']);
-        $monetize = ContentMonetize::where('content_id', $data['content']['id'])->find(); // fetch the note
+        $monetize = ContentMonetize::where(['content_id' => $data['content']['id']])->first(); // fetch the note
         if ($monetize) {
             $monetize->updated_by = Auth::id();
             $monetize->delete(); //delete the fetched note
