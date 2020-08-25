@@ -110,7 +110,7 @@
                 </a>
                 @elseif($content->publish == 'yes' && $content->content_link != '')
 
-                <a class="btn btn-danger btn-sm delete-confirm" href="{{ route('client.contents.unpublish',$content->id)}}" data-text="Are you sure? want to Unpublish this content.">
+                <a class="btn btn-danger btn-sm delete-confirm" href="{{ route('client.contents.unpublish',$content->id)}}" data-text="Are you sure? want to Unpublish this content." data-header='Unpublish'>
                     <i class="fas fa-eye-slash">
                     </i>
                     UnPublish
@@ -394,6 +394,11 @@
             event.preventDefault();
             const url = $(this).attr('href');
             const text = $(this).attr('data-text');
+            const unpublish = $(this).attr('data-header');
+            if (unpublish != '' && unpublish != undefined) {
+                $("#confirm .modal-title").text(unpublish + ' Confirmation');
+                $("#confirm #delete-btn").text(unpublish);
+            }
             $("#confirm .modal-body").text(text);
             $('#confirm').modal({
                     backdrop: 'static',

@@ -58,7 +58,7 @@
                         <div class="col-sm-8">
                             <select class="select2" name="origins[]" multiple="multiple" data-placeholder="Select Countries to restrict access" style="width: 100%;">
                                 @foreach($countries as $country)
-                                @if(in_array($country, $origins))
+                                @if(is_array($origins) && in_array($country, $origins))
                                 <option value="{{ $country }}" selected="true">{{ $country }}</option>
                                 @else
                                 <option value="{{ $country }}">{{ $country }}</option>
