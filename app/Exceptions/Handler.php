@@ -10,7 +10,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Auth\AuthenticationException;
 use Throwable;
 use Illuminate\Session\TokenMismatchException;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Illuminate\Support\Facades\Route;
 
 class Handler extends ExceptionHandler
@@ -62,6 +62,9 @@ class Handler extends ExceptionHandler
                     return route('client.login');
                 }
                 // return redirect('/');
+            }
+            if ($exception instanceof MethodNotAllowedHttpException) {
+                return abort('404');
             }
             return parent::render($request, $exception);
         }
