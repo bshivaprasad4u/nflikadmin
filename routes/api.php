@@ -28,6 +28,7 @@ Route::group([
     Route::post('send_otp', 'AuthController@send_otp')->name('api.v1.send_otp');
     Route::post('logout', 'AuthController@logout')->name('api.v1.logout');
     Route::post('register', 'RegistrationController@register')->name('api.v1.register');
+    Route::get('subscriptions', 'SubscriptionController@subscriptions');
     //Route::post('forgot_password', 'AuthController@forgot')->name('api.v1.forgot_password');
     //Route::get('verification/verify/{id}', 'VerificationController@verify')->name('api.v1.verification.verify');
     //Route::get('verification/resend', 'VerificationController@resend')->name('verification.resend')->middleware('auth:api');

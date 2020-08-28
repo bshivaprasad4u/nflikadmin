@@ -49,4 +49,9 @@ class Content extends Model
     {
         return $this->hasOne(ChannelContent::class, 'content_id', 'id');
     }
+
+    // public function payments()
+    // {
+    //     return $this->hasMany(Payment::class)->where(['item_type' => 'Content::class', 'content_id' => 'id']);
+    // }
 }

@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api\V1;
 use App\ApiCode;
 use App\Http\Controllers\Api\Controller as ApiController;
 use App\Payment;
+use App\SubscriptionUser;
+use App\ContentsUser;
 use Exception;
 use Razorpay\Api\Errors\SignatureVerificationError;
+use Carbon\Carbon;
 
 
 use Razorpay\Api\Api;
@@ -76,7 +79,16 @@ class PaymentController extends ApiController
             $attributes  = array('razorpay_signature'  => $update_payment->razorpay_signature,  'razorpay_payment_id'  => $update_payment->razorpay_payment_id,  'razorpay_order_id' => $update_payment->order_id);
             $this->api->utility->verifyPaymentSignature($attributes);
             $update_payment->payment_status = 'success';
-            $update_payment->save();
+            $payment_success = $update_payment->save();
+            if ($payment_success) {
+                if ($update_payment->item_type == 'subscription') {
+                    $this->addSubscriptionUser($update_payment);
+                } else  if ($update_payment->item_type == 'movie') {
+                    $this->addContentUser($update_payment);
+                } else  if ($update_payment->item_type == 'coupon') {
+                    // $this->addCouponUser($update_payment);
+                }
+            }
             return $this->respondWithMessage("Payment successful.");
         } catch (SignatureVerificationError $e) {
 
@@ -86,4 +98,36 @@ class PaymentController extends ApiController
             return $this->respondWithMessage("Payment failed.");
         }
     }
+    public function addSubscriptionUser(Payment $update_payment)
+    {
+
+        $subscription_user = [
+            'user_id' => $update_payment->user_id,
+            'subscription_id' => $update_payment->item_id,
+            'expires_at' => Carbon::now()->addYears(1),
+        ];
+        SubscriptionUser::create($subscription_user);
+    }
+
+    public function addContentUser(Payment $update_payment)
+    {
+        if ($update_payment->item_type == 'movie') {
+            $content_user = [
+                'user_id' => $update_payment->user_id,
+                'content_id' => $update_payment->item_id,
+            ];
+            ContentsUser::create($content_user);
+        }
+    }
+
+    // public function addCouponUser(Payment $update_payment)
+    // {
+
+    //     $coupon_user = [
+    //         'user_id' => $update_payment->user_id,
+    //         'coupon_id' => $update_payment->item_id,
+    //         'expires_at' => Carbon::now()->addYears(1),
+    //     ];
+    //     CouponsUser::create($coupon_user);
+    // }
 }
