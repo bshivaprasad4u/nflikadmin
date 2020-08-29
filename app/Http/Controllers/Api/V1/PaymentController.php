@@ -10,6 +10,8 @@ use App\ContentsUser;
 use Exception;
 use Razorpay\Api\Errors\SignatureVerificationError;
 use Carbon\Carbon;
+use App\Notifications\ContentPayment;
+use App\Notifications\SubscriptionPayment;
 
 
 use Razorpay\Api\Api;
@@ -106,7 +108,8 @@ class PaymentController extends ApiController
             'subscription_id' => $update_payment->item_id,
             'expires_at' => Carbon::now()->addYears(1),
         ];
-        SubscriptionUser::create($subscription_user);
+        $subscription_payment = SubscriptionUser::create($subscription_user);
+        //auth('api')->user()->notify(new SubscriptionPayment($subscription_payment));
     }
 
     public function addContentUser(Payment $update_payment)
@@ -116,7 +119,8 @@ class PaymentController extends ApiController
                 'user_id' => $update_payment->user_id,
                 'content_id' => $update_payment->item_id,
             ];
-            ContentsUser::create($content_user);
+            $content_payment = ContentsUser::create($content_user);
+            // auth('api')->user()->notify(new ContentPayment($content_payment));
         }
     }
 
