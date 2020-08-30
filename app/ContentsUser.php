@@ -10,12 +10,12 @@ class ContentsUser extends Model
         'user_id', 'content_id'
     ];
 
-    function user()
+    function purchased_by_user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
-    function contents_user()
+    function user_purchased_contents()
     {
-        return $this->hasOne(Content::class, 'id', 'content_id');
+        return $this->hasMany(Content::class, 'id', 'content_id');
     }
 }

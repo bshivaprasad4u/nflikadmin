@@ -48,6 +48,6 @@ Route::group([
         Route::post('password_update', 'UserController@password_update');
         Route::post('payment_initiation', 'PaymentController@payment_initiation');
         Route::post('payment_response', 'PaymentController@payment_response');
-        //Route::get('auth_user_api', 'AuthController@me');
+        //Route::get('notifysubscription', 'PaymentController@notifysubscription');
     });
 });

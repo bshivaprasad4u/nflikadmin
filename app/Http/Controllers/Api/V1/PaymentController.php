@@ -104,7 +104,6 @@ class PaymentController extends ApiController
     }
     public function addSubscriptionUser(Payment $update_payment)
     {
-
         $subscription_user = [
             'user_id' => $update_payment->user_id,
             'subscription_id' => $update_payment->item_id,
@@ -117,16 +116,21 @@ class PaymentController extends ApiController
         }
     }
 
+    // public function notifysubscription()
+    // {
+    //     $sub = SubscriptionUser::where(['user_id' => auth('api')->user()->id])->first();
+    //     auth('api')->user()->notify(new SubscriptionPayment($sub));
+    //     //dd($sub->user_subscription['name']);
+    // }
+
     public function addContentUser(Payment $update_payment)
     {
-        if ($update_payment->item_type == 'movie') {
-            $content_user = [
-                'user_id' => $update_payment->user_id,
-                'content_id' => $update_payment->item_id,
-            ];
-            $content_payment = ContentsUser::create($content_user);
-            // auth('api')->user()->notify(new ContentPayment($content_payment));
-        }
+        $content_user = [
+            'user_id' => $update_payment->user_id,
+            'content_id' => $update_payment->item_id,
+        ];
+        $content_payment = ContentsUser::create($content_user);
+        auth('api')->user()->notify(new ContentPayment($content_payment));
     }
 
     // public function addCouponUser(Payment $update_payment)

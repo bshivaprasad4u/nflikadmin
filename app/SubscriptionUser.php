@@ -11,13 +11,13 @@ class SubscriptionUser extends Model
     protected $fillable = [
         'user_id', 'subscription_id', 'expires_at'
     ];
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'expires_at'];
 
-    function user()
+    function subscribed_user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
-    function subscription_user()
+    function user_subscription()
     {
         return $this->hasOne(Subscription::class, 'id', 'subscription_id');
     }

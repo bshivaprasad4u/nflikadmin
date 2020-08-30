@@ -18,7 +18,7 @@ class SubscriptionPayment extends Notification implements ShouldQueue
      */
     public function __construct($content)
     {
-        $this->$content = $content;
+        $this->content = $content;
     }
 
     /**
@@ -39,13 +39,13 @@ class SubscriptionPayment extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        dd($this->content);
-        dd($this->content['expires_at']);
+        // dd($this->content);
+        //dd($this->content['expires_at']);
         return (new MailMessage)
-            ->subject('Subscription purchase Notification')
-            ->line('Hi,')
-            // ->line('Thank you for purchasing the ' . $this->content->subscription_user['name'] . ' Plan.')
-            ->line('This plan valid up to ' . $this->content['expires_at'])
+            ->subject('Subscription Notification')
+            ->line('Hi ' . $this->content->subscribed_user['name'] . ',')
+            ->line('Thank you for purchasing the ' . $this->content->user_subscription['name'] . ' Plan.')
+            ->line('This plan valid up to ' . $this->content['expires_at']->format('M-d-Y'))
             ->line('Thank you for using our application!');
     }
     /**

@@ -18,7 +18,7 @@ class ContentPayment extends Notification implements ShouldQueue
      */
     public function __construct($content)
     {
-        $this->$content = $content;
+        $this->content = $content;
     }
 
     /**
@@ -41,8 +41,8 @@ class ContentPayment extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Purchase Notification')
-            ->line('Hi,')
-            ->line('Thank you for purchasing the ' . $this->content['name'])
+            ->line('Hi ' . $this->content->purchased_by_user['name'] . ',')
+            ->line('Thank you for purchasing the ' . $this->content->user_purchased_contents['name'] . ' Content.')
             ->line('Thank you for using our application!');
     }
     /**
