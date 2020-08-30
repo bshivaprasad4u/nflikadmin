@@ -83,6 +83,7 @@ class PaymentController extends ApiController
             $this->api->utility->verifyPaymentSignature($attributes);
             $update_payment->payment_status = 'success';
             $payment_success = $update_payment->save();
+            dd($payment_success);
             if ($payment_success) {
                 if ($user_payment->item_type == 'subscription') {
                     $this->addSubscriptionUser($user_payment);
