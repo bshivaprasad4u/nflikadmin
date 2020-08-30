@@ -86,10 +86,9 @@ class PaymentController extends ApiController
             //  dd($payment_success);
             if ($payment_success) {
                 if ($update_payment->item_type == 'SubscriptionUser::class') {
-                    dd('subscription');
-                    $this->addSubscriptionUser($user_payment);
-                } else  if ($user_payment->item_type == 'Content::class') {
-                    $this->addContentUser($user_payment);
+                    $this->addSubscriptionUser($update_payment);
+                } else  if ($update_payment->item_type == 'Content::class') {
+                    $this->addContentUser($update_payment);
                 } else  if ($user_payment->item_type == 'coupon') {
                     // $this->addCouponUser($update_payment);
                 }
@@ -103,12 +102,12 @@ class PaymentController extends ApiController
             return $this->respondWithMessage("Payment failed.");
         }
     }
-    public function addSubscriptionUser(Payment $user_payment)
+    public function addSubscriptionUser(Payment $update_payment)
     {
 
         $subscription_user = [
-            'user_id' => $user_payment->user_id,
-            'subscription_id' => $user_payment->item_id,
+            'user_id' => $update_payment->user_id,
+            'subscription_id' => $update_payment->item_id,
             'expires_at' => Carbon::now()->addYears(1),
         ];
         dd($subscription_user);
