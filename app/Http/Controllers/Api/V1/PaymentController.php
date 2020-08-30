@@ -78,16 +78,17 @@ class PaymentController extends ApiController
         //dd($attrbutes);
         //dd($this->api->utility->verifyPaymentSignature($attrbutes));
         try {
+            $user_payment = $update_payment;
             $attributes  = array('razorpay_signature'  => $update_payment->razorpay_signature,  'razorpay_payment_id'  => $update_payment->razorpay_payment_id,  'razorpay_order_id' => $update_payment->order_id);
             $this->api->utility->verifyPaymentSignature($attributes);
             $update_payment->payment_status = 'success';
             $payment_success = $update_payment->save();
             if ($payment_success) {
-                if ($update_payment->item_type == 'subscription') {
-                    $this->addSubscriptionUser($update_payment);
-                } else  if ($update_payment->item_type == 'movie') {
-                    $this->addContentUser($update_payment);
-                } else  if ($update_payment->item_type == 'coupon') {
+                if ($user_payment->item_type == 'subscription') {
+                    $this->addSubscriptionUser($user_payment);
+                } else  if ($user_payment->item_type == 'movie') {
+                    $this->addContentUser($user_payment);
+                } else  if ($user_payment->item_type == 'coupon') {
                     // $this->addCouponUser($update_payment);
                 }
             }
