@@ -110,7 +110,7 @@ class PaymentController extends ApiController
             'subscription_id' => $update_payment->item_id,
             'expires_at' => now()->addYear(),
         ];
-        dd($subscription_user);
+        //dd($subscription_user);
         $subscription_payment = SubscriptionUser::create($subscription_user);
         dd($subscription_payment);
         // auth('api')->user()->notify(new SubscriptionPayment($subscription_payment));
