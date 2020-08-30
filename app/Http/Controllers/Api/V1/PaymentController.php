@@ -85,11 +85,10 @@ class PaymentController extends ApiController
             $payment_success = $update_payment->save();
             //  dd($payment_success);
             if ($payment_success) {
-                dd($update_payment);
-                if ($update_payment->item_type == 'subscription') {
+                if ($update_payment->item_type == 'SubscriptionUser::class') {
                     dd('subscription');
                     $this->addSubscriptionUser($user_payment);
-                } else  if ($user_payment->item_type == 'movie') {
+                } else  if ($user_payment->item_type == 'Content::class') {
                     $this->addContentUser($user_payment);
                 } else  if ($user_payment->item_type == 'coupon') {
                     // $this->addCouponUser($update_payment);
