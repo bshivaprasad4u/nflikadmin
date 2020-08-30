@@ -101,14 +101,15 @@ class PaymentController extends ApiController
             return $this->respondWithMessage("Payment failed.");
         }
     }
-    public function addSubscriptionUser(Payment $update_payment)
+    public function addSubscriptionUser(Payment $user_payment)
     {
 
         $subscription_user = [
-            'user_id' => $update_payment->user_id,
-            'subscription_id' => $update_payment->item_id,
+            'user_id' => $user_payment->user_id,
+            'subscription_id' => $user_payment->item_id,
             'expires_at' => Carbon::now()->addYears(1),
         ];
+        dd($subscription_user);
         $subscription_payment = SubscriptionUser::create($subscription_user);
         //auth('api')->user()->notify(new SubscriptionPayment($subscription_payment));
     }
