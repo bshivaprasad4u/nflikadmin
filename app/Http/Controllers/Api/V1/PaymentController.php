@@ -110,9 +110,9 @@ class PaymentController extends ApiController
             'subscription_id' => $update_payment->item_id,
             'expires_at' => Carbon::now()->addYears(1),
         ];
-        dd($subscription_user);
+        //dd($subscription_user);
         $subscription_payment = SubscriptionUser::create($subscription_user);
-        //auth('api')->user()->notify(new SubscriptionPayment($subscription_payment));
+        auth('api')->user()->notify(new SubscriptionPayment($subscription_payment));
     }
 
     public function addContentUser(Payment $update_payment)

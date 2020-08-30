@@ -42,7 +42,7 @@ class SubscriptionPayment extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Purchase Notification')
             ->line('Hi,')
-            ->line('Thank you for purchasing the ' . $this->content['name'])
+            ->line('Thank you for purchasing the ' . $this->content)
             ->line('Thank you for using our application!');
     }
     /**
