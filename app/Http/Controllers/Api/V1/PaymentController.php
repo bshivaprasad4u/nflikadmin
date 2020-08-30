@@ -112,7 +112,8 @@ class PaymentController extends ApiController
         ];
         //dd($subscription_user);
         $subscription_payment = SubscriptionUser::create($subscription_user);
-        auth('api')->user()->notify(new SubscriptionPayment($subscription_payment));
+        dd($subscription_payment);
+        // auth('api')->user()->notify(new SubscriptionPayment($subscription_payment));
     }
 
     public function addContentUser(Payment $update_payment)
