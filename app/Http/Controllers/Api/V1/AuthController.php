@@ -128,7 +128,7 @@ class AuthController extends ApiController
     public function me()
     {
         $user_subscritpion = auth('api')->user()->user_subscription;
-        if ($user_subscritpion['id'] != 1)
+        if ($user_subscritpion && $user_subscritpion['id'] != 1)
             $user_subscritpion['plan']  = Settings::PLANS[$user_subscritpion->user_subscription_details['name']];
 
         $auth_user_api = [

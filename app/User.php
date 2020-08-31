@@ -10,12 +10,15 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Notifications\SendPasswordEmail;
 use App\Notifications\DeviceVerificationEmail;
 use App\Notifications\ApiPasswordReset;
+use App\Settings;
 
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
     protected $guard = 'api';
     protected $with = ['devices'];
+
+
 
     /**
      * The attributes that are mass assignable.
