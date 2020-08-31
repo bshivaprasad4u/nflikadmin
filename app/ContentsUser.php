@@ -16,6 +16,10 @@ class ContentsUser extends Model
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
+    function user_purchased_content()
+    {
+        return $this->hasOne(Content::class, 'id', 'content_id');
+    }
     function user_purchased_contents()
     {
         return $this->hasMany(Content::class, 'id', 'content_id');

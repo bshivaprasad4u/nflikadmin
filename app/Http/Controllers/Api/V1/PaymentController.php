@@ -118,8 +118,9 @@ class PaymentController extends ApiController
 
     // public function notifysubscription()
     // {
-    //     $sub = SubscriptionUser::where(['user_id' => auth('api')->user()->id])->first();
-    //     auth('api')->user()->notify(new SubscriptionPayment($sub));
+    //     $sub = ContentsUser::where(['user_id' => auth('api')->user()->id])->first();
+    //     //dd($sub->user_purchased_content['name']);
+    //     auth('api')->user()->notify(new ContentPayment($sub));
     //     //dd($sub->user_subscription['name']);
     // }
 

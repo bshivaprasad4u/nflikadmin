@@ -42,7 +42,7 @@ class ContentPayment extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Purchase Notification')
             ->line('Hi ' . $this->content->purchased_by_user['name'] . ',')
-            ->line('Thank you for purchasing the ' . $this->content->user_purchased_contents['name'] . ' Content.')
+            ->line('Thank you for purchasing the ' . $this->content->user_purchased_content['name'] . ' Content.')
             ->line('Thank you for using our application!');
     }
     /**

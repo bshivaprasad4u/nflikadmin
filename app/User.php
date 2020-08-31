@@ -15,7 +15,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
     protected $guard = 'api';
-    protected $with = ['devices', 'subscription'];
+    protected $with = ['devices'];
 
     /**
      * The attributes that are mass assignable.
@@ -96,7 +96,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Device::class, 'user_id', 'id');
     }
 
-    public function subscription()
+    public function user_subscription()
     {
         return $this->hasOne(SubscriptionUser::class, 'user_id', 'id')->latest();
     }

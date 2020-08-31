@@ -9,7 +9,7 @@ use App\Notifications\SendOtpNotification;
 use Exception;
 //use Jenssegers\Agent\Agent;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
+use App\Settings;
 
 
 
@@ -127,11 +127,14 @@ class AuthController extends ApiController
 
     public function me()
     {
-        //dd(Auth::user());
+        $user_subscritpion = auth('api')->user()->user_subscription;
+        if ($user_subscritpion['id'] != 1)
+            $user_subscritpion['plan']  = Settings::PLANS[$user_subscritpion->user_subscription_details['name']];
+
         $auth_user_api = [
             //'token' => auth('api')->user()->getJWTIdentifier,
             'user_details' => auth('api')->user(),
-            //'devices' => auth('api')->user()->devices
+            //'subscirption_plan' => $user_subscritpion,
         ];
         return $this->respond($auth_user_api);
     }
