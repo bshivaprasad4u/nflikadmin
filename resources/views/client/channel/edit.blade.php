@@ -106,7 +106,7 @@
                 <div class="form-group row">
                     <label class="col-form-label col-sm-4" for=""> Description</label>
                     <div class="col-sm-8">
-                        <textarea class="form-control" rows="3" name="description" placeholder="Enter Description here....">{{ old('description')??$content->description }}</textarea>
+                        <textarea class="form-control" rows="3" id="description" name="description" placeholder="Enter Description here....">{{ old('description')??$content->description }}</textarea>
                         @error('description')
                         <div class="alert-custome">{{ $message }}</div>
                         @enderror
@@ -115,6 +115,7 @@
 
             </div>
             <div class="card-footer">
+                <a href="{{ route('client.channel.view',$content->id) }}"><button type="button" class="btn btn-default float-right ml-3">Cancel</button></a>
                 <button class="btn btn-primary float-right" type="submit"> Submit</button>
             </div>
         </div>
@@ -122,6 +123,7 @@
 </section>
 @endsection
 @section('script')
+<script src="{{ asset('adminlte/ckeditor/ckeditor/ckeditor.js')}}"></script>
 <script>
     $(function() {
 
@@ -137,6 +139,7 @@
             //replace the "Choose a file" label
             $(this).next('.custom-file-label').html(fileName);
         });
+        CKEDITOR.replace('description');
     });
 </script>
 @endsection

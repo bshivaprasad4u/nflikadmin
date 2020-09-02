@@ -3,8 +3,8 @@
 use App\Channel;
 use Illuminate\Database\Seeder;
 use App\Client;
-use App\ClientsSubscriptions;
-use Carbon\Carbon;
+use App\SubscriptionUser;
+use App\User;
 
 class ClientUserSeeder extends Seeder
 {
@@ -21,13 +21,24 @@ class ClientUserSeeder extends Seeder
                 'email' => 'client@nflik.com',
                 'phone' => '1234567890',
                 'password' => bcrypt('client@123'),
-                'email_verified_at' => Carbon::now(),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
+                'email_verified_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
-            ClientsSubscriptions::create([
+            $user = User::create([
+                'name' => 'Client',
+                'email' => 'client@nflik.com',
+                'mobile' => '1234567890',
+                'password' => 'client@123',
+                'email_verified_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            SubscriptionUser::create([
                 'client_id' => $client->id,
-                'subscription_id' => 1,
+                'subscription_id' => 3,
+                'expires_at' => now()->addYear(),
+                'user_id' => $user->id
 
             ]);
             Channel::create([
@@ -40,10 +51,19 @@ class ClientUserSeeder extends Seeder
                 'email' => 'agent@nflik.com',
                 'phone' => '2234567890',
                 'password' => bcrypt('agent@123'),
-                'email_verified_at' => Carbon::now(),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
+                'email_verified_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
                 'parent_id' => 1
+            ]);
+            $user = User::create([
+                'name' => 'Agent',
+                'email' => 'agent@nflik.com',
+                'mobile' => '2234567890',
+                'password' => 'agent@123',
+                'email_verified_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
     }

@@ -45,7 +45,7 @@ class ClientPasswordEmail extends Notification implements ShouldQueue
             // ->line('Hi Client,')
             ->line('You can Login to your account with the password below')
             ->line('Password : ' . $this->token)
-            ->line('Dashboard URL:' . $url)
+            ->action('Dashboard Link', $url)
             ->line('Thank you for using our application!');
     }
     /**

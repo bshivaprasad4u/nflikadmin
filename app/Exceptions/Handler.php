@@ -50,6 +50,7 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception)
     {
+        dd($exception);
         if ($request->expectsJson())
             return ExceptionHandlerHelper::render($request, $exception);
         else {

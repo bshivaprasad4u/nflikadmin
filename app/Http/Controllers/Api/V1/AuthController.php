@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\Controller as ApiController;
 use App\ApiCode;
 use App\User;
+use App\Client;
 use App\Notifications\SendOtpNotification;
 use Exception;
 //use Jenssegers\Agent\Agent;
@@ -127,14 +128,40 @@ class AuthController extends ApiController
 
     public function me()
     {
-        $user_subscritpion = auth('api')->user()->user_subscription;
-        if ($user_subscritpion && $user_subscritpion['id'] != 1)
+        $user = auth('api')->user();
+        $client = Client::where(['email' => $user->email, 'phone' => $user->mobile])->first();
+        if ($client && $client->parent_id == null) {
+            $client_details['client_id'] = $client->id;
+            $client_details['user_type'] = 'Client';
+            $client_details['agent_id'] = null;
+        } else if ($client && $client->parent_id != null) {
+            $client_details['client_id'] = $client->parent_id;
+            $client_details['user_type'] = 'Agent';
+            $client_details['agent_id'] = $client->id;
+            $agent_client = Client::find($client->parent_id);
+            $client_subscription = $agent_client->client_subscription;
+            if ($client_subscription->user_subscription_details['id'] != 1) {
+                //$client = $user->user_subscription->subscribed_client;
+                $client_subscription['plan']  = Settings::PLANS[$client_subscription->user_subscription_details['name']];
+            }
+            $client_details['client_subscription_details'] = $client_subscription;
+        } else {
+            $client_details = null;
+        }
+        $user_subscritpion = $user->user_subscription;
+        //dd($user_subscritpion);
+        if ($user_subscritpion && $user_subscritpion->user_subscription_details['id'] != 1) {
+            //$client = $user->user_subscription->subscribed_client;
             $user_subscritpion['plan']  = Settings::PLANS[$user_subscritpion->user_subscription_details['name']];
+        }
+
 
         $auth_user_api = [
             //'token' => auth('api')->user()->getJWTIdentifier,
-            'user_details' => auth('api')->user(),
-            //'subscirption_plan' => $user_subscritpion,
+            'user_details' => $user,
+            //'devices' => $user->devices,
+            //'user_subscription' => $user_subscritpion,
+            'client_details' => $client_details,
         ];
         return $this->respond($auth_user_api);
     }

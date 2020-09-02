@@ -610,8 +610,7 @@ class ContentController extends Controller
         $client = $data['content']->client;
         $channel = $client->channel;
         //dd($data['content']['id']);
-        $client_slots = $client->client_subscription->clientsubscription['slots'];
-        //dd($client_slots);
+        $client_slots = $client->client_subscription->subscribed_client['slots'];
         $client_used_slots = ChannelContent::where('channel_id', $channel->id)->sum('number_of_slots');
         //dd($client_used_slots);
 

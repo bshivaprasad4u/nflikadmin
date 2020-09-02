@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group([
     'prefix' => 'v1',
-    'middleware' => ['api'],
+    'middleware' => ['CORS', 'api'],
     'namespace' => 'Api\V1'
 
 ], function ($router) {
@@ -48,6 +48,6 @@ Route::group([
         Route::post('password_update', 'UserController@password_update');
         Route::post('payment_initiation', 'PaymentController@payment_initiation');
         Route::post('payment_response', 'PaymentController@payment_response');
-        //Route::get('notifysubscription', 'PaymentController@notifysubscription');
+        Route::get('notifysubscription', 'PaymentController@notifysubscription');
     });
 });

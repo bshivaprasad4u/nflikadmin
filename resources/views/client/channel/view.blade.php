@@ -6,7 +6,11 @@
             <h3 class="card-title">Channel Details</h3>
 
             <div class="card-tools">
-                <a href="{{ route('client.channel.edit',$channel->id)}}">Edit</a>
+                <a class="btn btn-primary btn-sm" href="{{ route('client.channel.edit',$channel->id)}}">
+                    <i class="fas fa-pencil-alt">
+                    </i>
+                    Edit
+                </a>
                 <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
                     <i class="fas fa-minus"></i></button>
 

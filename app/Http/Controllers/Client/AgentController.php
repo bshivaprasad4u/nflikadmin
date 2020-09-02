@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Subscription;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -12,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 use App\Client;
+use App\User;
 
 class AgentController extends Controller
 {
@@ -65,8 +65,8 @@ class AgentController extends Controller
         $validationData = $request->validate(
             [
                 'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:clients'],
-                'phone' => ['required', 'string',  'min:10', 'unique:clients'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:clients', 'unique:users'],
+                'phone' => ['required', 'string',  'min:10', 'unique:clients', 'unique:users,mobile'],
             ]
         );
         $password = Str::random(8);
@@ -79,6 +79,8 @@ class AgentController extends Controller
         ];
         //dd($save_data);
         $client = Client::create($save_data);
+        User::create(['name' => $request->name, 'email' => $request->email, 'mobile' => $request->phone, 'password' => $password]);
+
         $client->sendClientPasswordNotification($password);
 
 

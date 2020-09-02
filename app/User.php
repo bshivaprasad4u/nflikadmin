@@ -68,7 +68,6 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-
     public function generate_otp()
     {
         $this->timestamps = false;

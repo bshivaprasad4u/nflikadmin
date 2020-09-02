@@ -7,11 +7,15 @@ use App\Http\Controllers\Api\Controller as ApiController;
 use App\Payment;
 use App\SubscriptionUser;
 use App\ContentsUser;
+use App\Events\CreateClientEvent;
 use Exception;
 use Razorpay\Api\Errors\SignatureVerificationError;
 use Carbon\Carbon;
 use App\Notifications\ContentPayment;
 use App\Notifications\SubscriptionPayment;
+use App\Client;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 
 use Razorpay\Api\Api;
@@ -108,6 +112,7 @@ class PaymentController extends ApiController
             'user_id' => $update_payment->user_id,
             'subscription_id' => $update_payment->item_id,
             'expires_at' => now()->addYear(),
+            'client_id' => $this->get_client_id()
         ];
         //dd($subscription_user);
         $subscription_payment = SubscriptionUser::create($subscription_user);
@@ -116,13 +121,22 @@ class PaymentController extends ApiController
         }
     }
 
-    // public function notifysubscription()
-    // {
-    //     $sub = ContentsUser::where(['user_id' => auth('api')->user()->id])->first();
-    //     //dd($sub->user_purchased_content['name']);
-    //     auth('api')->user()->notify(new ContentPayment($sub));
-    //     //dd($sub->user_subscription['name']);
-    // }
+    public function get_client_id()
+    {
+        // $sub = ContentsUser::where(['user_id' => auth('api')->user()->id])->first();
+        $user = auth('api')->user();
+        $client = Client::where(['email' => $user->email, 'phone' => $user->mobile])->first();
+        if ($client) {
+            $client_id = $client->id;
+        } else {
+            $password = Str::random(8);
+            $save_data = ['name' => $user->name, 'email' => $user->email, 'phone' => $user->mobile, 'password' => Hash::make($password)];
+            $insert_client = Client::create($save_data);
+            $insert_client->sendClientPasswordNotification($password);
+            $client_id = $insert_client->id;
+        }
+        return $client_id;
+    }
 
     public function addContentUser(Payment $update_payment)
     {

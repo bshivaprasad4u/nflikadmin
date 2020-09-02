@@ -44,7 +44,7 @@ class Client extends Authenticatable //implements MustVerifyEmail
 
     function client_subscription()
     {
-        return $this->hasOne(ClientsSubscriptions::class, 'client_id');
+        return $this->hasOne(SubscriptionUser::class, 'client_id');
     }
     function agents()
     {

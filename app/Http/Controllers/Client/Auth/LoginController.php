@@ -50,13 +50,11 @@ class LoginController extends ClientController
         return view('client.auth.login');
     }
 
-
     public function logout(Request $request)
     {
-        //$this->guard('client')->logout();
-        Auth::guard('client')->logout();
+        $this->guard('client')->logout();
 
-        //$request->session()->invalidate();
+        $request->session()->invalidate();
 
         return redirect('/client/login');
     }

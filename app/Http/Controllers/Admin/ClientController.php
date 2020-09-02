@@ -9,9 +9,12 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Client;
+use App\User;
 use App\ClientsSubscriptions;
 use App\Channel;
 use Illuminate\Support\Str;
+use App\Events\CreateClientEvent;
+use App\SubscriptionUser;
 
 class ClientController extends Controller
 {
@@ -66,8 +69,8 @@ class ClientController extends Controller
         $validationData = $request->validate(
             [
                 'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:clients'],
-                'phone' => ['required', 'string',  'min:10', 'unique:clients'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:clients', 'unique:users'],
+                'phone' => ['required', 'string',  'min:10', 'unique:clients', 'unique:users,mobile'],
                 'subscription' => ['required'],
                 'subdomain' => 'sometimes|nullable|alpha_num',
                 'slot_duration' => 'sometimes|nullable|integer',
@@ -78,18 +81,30 @@ class ClientController extends Controller
         $save_data = ['name' => $request->name, 'email' => $request->email, 'phone' => $request->phone, 'password' => Hash::make($password), 'slot_duration' => $request->slot_duration];
         //$save_data = ['name' => $request->name, 'email' => $request->email, 'phone' => $request->phone, 'password' => Hash::make($request->phone), 'slot_duration' => $request->slot_duration];
         $client = Client::create($save_data);
-        ClientsSubscriptions::create(
+
+        $user = User::create(['name' => $request->name, 'email' => $request->email, 'mobile' => $request->phone, 'password' => $password]);
+
+        $subscription = SubscriptionUser::create(
             [
                 'client_id' => $client->id,
                 'subscription_id' => $request->subscription,
+                'expires_at' => now()->addYear(),
+                'user_id' => $user->id
             ]
         );
+        // ClientsSubscriptions::create(
+        //     [
+        //         'client_id' => $client->id,
+        //         'subscription_id' => $request->subscription,
+        //     ]
+        // );
         Channel::create([
             'client_id' => $client->id,
             'subdomain' => $request->subdomain
         ]);
         //$client->sendEmailVerificationNotification();
         $client->sendClientPasswordNotification($password);
+        //event(new CreateClientEvent($client, $password));
 
         if ($client) {
             return redirect('admin/clients')->with('success', "Client Added Successfully.");
