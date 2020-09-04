@@ -49,9 +49,11 @@
                     <div class="col-sm-8">
                         <select class="form-control" name="subscription">
                             @foreach($subscriptions as $sub):
+                            @if($sub->id != 2)
                             <option value="{{$sub->id}}">
                                 {{ ucfirst($sub->name) }}
                             </option>
+                            @endif
                             @endforeach
                         </select>
                     </div>

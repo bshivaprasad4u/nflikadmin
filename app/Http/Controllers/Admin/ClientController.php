@@ -52,7 +52,7 @@ class ClientController extends Controller
     public function create()
     {
         $data['page_title'] = 'Clients';
-        $data['subscriptions'] = Subscription::all()->sortBy('name');
+        $data['subscriptions'] = Subscription::all()->sortBy('id');
         return view('admin.client.create', $data);
     }
 
