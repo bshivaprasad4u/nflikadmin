@@ -50,7 +50,7 @@
                         <select class="form-control" name="subscription">
                             @foreach($subscriptions as $sub):
                             @if($sub->id != 2)
-                            <option value="{{$sub->id}}">
+                            <option value="{{$sub->id}}" {{ (old('subscription') == $sub->id) ? 'Selected' : ''}}>
                                 {{ ucfirst($sub->name) }}
                             </option>
                             @endif
