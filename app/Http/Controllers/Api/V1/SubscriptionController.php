@@ -21,14 +21,13 @@ class SubscriptionController extends ApiController
     public function subscriptions()
     {
         $subscriptions = Subscription::all();
-        $subscription_plans = [];
+        // $subscription_plans = [];
         if ($subscriptions) {
             foreach ($subscriptions as $subscription) {
                 if ($subscription['id'] != 1)
                     $subscription['plan']  = Settings::PLANS[$subscription['name']];
             }
-            //dd($subscriptions);
-            return $this->respond($subscriptions);
+            return $this->respond(['subscriptions' => $subscriptions]);
         } else {
             return $this->respondWithMessage("Oops something went wrong.");
         }
