@@ -2,8 +2,6 @@
 
 namespace App\Events;
 
-use App\Client;
-use App\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,20 +9,25 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Payment;
+use App\User;
 
-class CreateClientEvent
+class UserCouponPurchasedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+    public $payment;
     public $user;
-    //public $password;
+    public $email_to;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(Payment $payment, User $user, $email_to)
     {
+        $this->payment = $payment;
         $this->user = $user;
+        $this->email_to = $email_to;
     }
 
     /**

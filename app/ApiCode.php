@@ -6,6 +6,7 @@ class ApiCode
 {
     public const VERIFICATION_CODE_EXPIRY_IN_MINS = 15;
     public const OTP_EXIPRES_IN_MINS = 5;
+    public const COUPON_EXIPRES_IN_DAYS = 90;
 
     public const DATA_NOT_FOUND = 113;
     public const SOMETHING_WENT_WRONG = 250;

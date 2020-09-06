@@ -9,7 +9,7 @@ class ContentsUser extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'user_id', 'content_id'
+        'user_id', 'content_id', 'coupon_redeem'
     ];
     protected $dates = ['deleted_at'];
     function purchased_by_user()

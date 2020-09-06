@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class SubscriptionPayment extends Notification implements ShouldQueue
+class SendCouponCode extends Notification implements ShouldQueue
 {
     use Queueable;
     public $content;
@@ -39,12 +39,12 @@ class SubscriptionPayment extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        //dd($this->content['expires_at']);
         return (new MailMessage)
-            ->subject('Subscription Notification')
-            ->line('Hi ' . $this->content->subscribed_user['name'] . ',')
-            ->line('Thank you for purchasing the ' . $this->content->user_subscription_details['name'] . ' Plan.')
-            ->line('This plan valid up to ' . $this->content['expires_at']->format('M-d-Y'))
+            ->subject('Coupon Code')
+            ->line('Your friend ' . $this->content->purchased_by_user['name'] . ' sent this coupon to watch the ')
+            ->line($this->content->user_purchased_content['name'] . ' in our website.')
+            ->line('Coupon Code : ' . $this->content->coupon_code)
+            ->line('Use this Coupon on or before : ' . $this->content['expires_at']->format('M-d-Y'))
             ->line('Thank you for using our application!');
     }
     /**

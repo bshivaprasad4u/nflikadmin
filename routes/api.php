@@ -48,6 +48,9 @@ Route::group([
         Route::post('password_update', 'UserController@password_update');
         Route::post('payment_initiation', 'PaymentController@payment_initiation');
         Route::post('payment_response', 'PaymentController@payment_response');
-        //Route::get('notifysubscription', 'PaymentController@notifysubscription');
+        Route::post('resend_coupon_code', 'PaymentController@resend_coupon_code');
+        Route::post('redeem_coupon_code', 'PaymentController@redeem_coupon_code');
+
+        // Route::post('addSubscriptionUserEvent', 'PaymentController@addSubscriptionUserEvent');
     });
 });

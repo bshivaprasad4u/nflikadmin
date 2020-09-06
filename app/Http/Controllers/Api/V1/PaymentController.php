@@ -7,17 +7,19 @@ use App\Http\Controllers\Api\Controller as ApiController;
 use App\Payment;
 use App\SubscriptionUser;
 use App\ContentsUser;
-use App\Events\CreateClientEvent;
 use Exception;
 use Razorpay\Api\Errors\SignatureVerificationError;
-use Carbon\Carbon;
 use App\Notifications\ContentPayment;
 use App\Notifications\SubscriptionPayment;
+use App\Notifications\CouponPayment;
 use App\Client;
+use App\CouponsUser;
+use App\Events\UserCouponPurchasedEvent;
+use App\Events\UserSubscribedEvent;
+use App\Notifications\SendCouponCode;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-
-
+use Illuminate\Support\Facades\Notification;
 use Razorpay\Api\Api;
 
 class PaymentController extends ApiController
@@ -46,12 +48,10 @@ class PaymentController extends ApiController
         //dd($payment_initiation_data);
         $payment = Payment::create($payment_initiation_data);
         if ($order && $payment) {
-            //dd($order);
             return $this->respond($payment);
         } else {
             return $this->respondWithMessage("Oops something went wrong. Payment Not initiated.");
         }
-        //dd($order);
     }
 
     public function payment_response()
@@ -91,10 +91,12 @@ class PaymentController extends ApiController
             if ($payment_success) {
                 if ($update_payment->item_type == 'SubscriptionUser::class') {
                     $this->addSubscriptionUser($update_payment);
+                    //event(new UserSubscribedEvent($update_payment));
                 } else  if ($update_payment->item_type == 'Content::class') {
                     $this->addContentUser($update_payment);
-                } else  if ($user_payment->item_type == 'coupon') {
-                    // $this->addCouponUser($update_payment);
+                } else  if ($user_payment->item_type == 'CouponsUser::class') {
+                    $this->addCouponUser($update_payment, request()->email_id);
+                    //event(new UserCouponPurchasedEvent($update_payment, auth()->user(), request()->email_id));
                 }
             }
             return $this->respondWithMessage("Payment successful.");
@@ -106,6 +108,13 @@ class PaymentController extends ApiController
             return $this->respondWithMessage("Payment failed.");
         }
     }
+    // public function addSubscriptionUserEvent()
+    // {
+    //     $update_payment = Payment::where(['user_id' => auth('api')->user()->id, 'order_id' => request()->order_id])->firstOrfail();
+    //     //dd($update_payment);
+
+    //     event(new UserCouponPurchasedEvent($update_payment, auth()->user(), request()->email_id));
+    // }
     public function addSubscriptionUser(Payment $update_payment)
     {
         $subscription_user = [
@@ -148,14 +157,71 @@ class PaymentController extends ApiController
         auth('api')->user()->notify(new ContentPayment($content_payment));
     }
 
-    // public function addCouponUser(Payment $update_payment)
-    // {
+    public function addCouponUser(Payment $update_payment)
+    {
 
-    //     $coupon_user = [
-    //         'user_id' => $update_payment->user_id,
-    //         'coupon_id' => $update_payment->item_id,
-    //         'expires_at' => Carbon::now()->addYears(1),
-    //     ];
-    //     CouponsUser::create($coupon_user);
-    // }
+        $coupon_user = [
+            'user_id' => $update_payment->user_id,
+            'content_id' => $update_payment->item_id,
+            'coupon_code' => $this->get_coupon_code(),
+            'expires_at' => now()->addDays(ApiCode::COUPON_EXIPRES_IN_DAYS),
+            'email_to' => request()->email_id
+        ];
+        $coupon_payment = CouponsUser::create($coupon_user);
+        if ($coupon_payment) {
+            auth('api')->user()->notify(new CouponPayment($coupon_payment, request()->email_id));
+            Notification::route('mail', request()->email_id)->notify(new SendCouponCode($coupon_payment));
+        }
+    }
+
+    public function generate_coupon_code()
+    {
+        $code = join('-', str_split(Str::rand(16), 4));
+        return $code;
+    }
+
+    public function get_coupon_code()
+    {
+        $code = $this->generate_coupon_code();
+        if (CouponsUser::where('coupon_code', $code)->exists())
+            $this->generate_coupon_code();
+        return Str::upper($code);
+    }
+
+    public function resend_coupon_code()
+    {
+        $coupon_payment = CouponsUser::find(request()->id);
+        if ($coupon_payment) {
+            Notification::route('mail', $coupon_payment->email_to)->notify(new SendCouponCode($coupon_payment));
+            return $this->respondWithMessage("Coupon Code Sent.");
+        } else {
+            return $this->respondWithMessage("Data not found.");
+        }
+    }
+
+    public function redeem_coupon_code()
+    {
+        $coupon = CouponsUser::where(['coupon_code' => request()->coupon_code])->first();
+        if ($coupon) {
+            if ($coupon->used_by == null && $coupon->expires_at->gt(now())) {
+                $coupon->used_by = auth('api')->user()->id;
+                //$coupon->coupon_code = null;
+                $coupon->deleted_at = now();
+                $redeem = $coupon->save();
+                if ($redeem) {
+                    $content_user = [
+                        'user_id' => $coupon->used_by,
+                        'content_id' => $coupon->content_id,
+                        'coupon_redeem' => 'yes'
+                    ];
+                    ContentsUser::create($content_user);
+                    return $this->respondWithMessage("Coupon redeemed.");
+                }
+            } else {
+                return $this->respondWithMessage("Coupon was redeemed or expired.");
+            }
+        } else {
+            return $this->respondWithMessage("Data not found.");
+        }
+    }
 }

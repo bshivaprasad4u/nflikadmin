@@ -17,7 +17,7 @@ class Payment extends Model
         elseif ($value == 'subscription')
             $this->attributes['item_type'] = 'SubscriptionUser::class';
         elseif ($value == 'coupon')
-            $this->attributes['item_type'] = 'ContentMonetize::class';
+            $this->attributes['item_type'] = 'CouponsUser::class';
     }
 
     // public function contents()
