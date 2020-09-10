@@ -11,9 +11,11 @@
                     <div class="custom-file" id="result_div">
                         <input type="file" name="videofile" require class="custom-file-input file-upload" id="fileupload" data-link="{{route('client.contents.video_store', $content->id)}}">
                         <label class="custom-file-label" for="fileupload">Select Video</label>
-                        <div class="progress" style="padding-top: 3px;">
+                        <div id="error" class="alert-custome"></div>
+                        <div class="progress">
                             <div class="progress-bar bg-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">&nbsp;</div>
                         </div>
+                        
                     </div>
 
                     </br>
@@ -57,6 +59,9 @@
                     _token: '{{ csrf_token() }}'
                 },
                 cache: false,
+                start: function (e) {
+                    $('#error').text('uploading please wait......');
+                },
                 done: function(e, data) {
                     $('#fileupload_success').html(data.result.file);
                     location.reload();
@@ -65,6 +70,13 @@
                         'width',
                         '0%'
                     );
+                },
+                fail:function(e,data){
+                    $('#error').html(data.jqXHR.responseJSON.data.messages.videofile);
+                    $('.progress-bar').hide().css(
+                                    'width',
+                                    '0%'
+                                );
                 }
             }).on('fileuploadprogress', function(e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);

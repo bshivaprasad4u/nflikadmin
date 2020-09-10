@@ -4,9 +4,14 @@ namespace App;
 
 class Settings
 {
+    public const VIDEO_FORMATS = 'mp4,mov,ogg,mpeg,webm,3gp,mov,flv,avi,wmv,ts,m3u8';
+    public const VIDEO_MIMETYPES = 'mimetypes:video/x-ms-asf,video/x-flv,video/mp4,application/x-mpegURL,video/MP2T,video/3gpp,video/quicktime,video/x-msvideo,video/x-ms-wmv,video/avi';
+    public const IMAGE_FORMATS = [''];
     public const LANGUAGES = [
         'Telugu', 'Tamil', 'Hindi', 'English', 'Panjabi', 'Kannada'
     ];
+  
+
     public const GENRES = [
         'Action', 'Comedy', 'Devotional', 'Drama', 'Education', 'Family', 'Food', 'Health', 'Horror', 'Music', 'Teaser', 'Travel', 'Yoga'
     ];

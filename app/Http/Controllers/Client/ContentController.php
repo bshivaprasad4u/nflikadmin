@@ -16,6 +16,11 @@ use App\Settings;
 use App\Teaser;
 use App\Photo;
 use App\Rules\FilenameRule;
+use Aws\S3\S3Client;
+use Aws\Exception\AwsException;
+use Aws\S3\MultipartUploader;
+use Aws\Exception\MultipartUploadException;
+use Aws\Laravel\AwsFacade as AWS;
 
 class ContentController extends Controller
 {
@@ -236,7 +241,7 @@ class ContentController extends Controller
         $validationData = $request->validate(
             [
                 //'videofile' => 'sometimes|nullable|mimes:mpeg,ogg,mp4,webm,3gp,mov,flv,avi,wmv,ts|max:' . config('constants.MAX_VIDEO_UPLOAD_SIZE'),
-                'videofile' => ['sometimes', 'nullable', 'mimes:mpeg,ogg,mp4,webm,3gp,mov,flv,avi,wmv,ts', 'max:' . config('constants.MAX_VIDEO_UPLOAD_SIZE'), new FilenameRule],
+                'videofile' => ['sometimes', 'nullable', 'mimetypes:'.Settings::VIDEO_MIMETYPES, 'max:' . config('constants.MAX_VIDEO_UPLOAD_SIZE')],
             ]
         );
         if ($request->hasfile('videofile')) {
@@ -247,23 +252,35 @@ class ContentController extends Controller
             $duration = Settings::getDuration($video);
             $video_path = 'client_videos/' . $video_name;
             //Storage::disk('s3')->put($video_path, file_get_contents($video));
-            Storage::disk('s3')->put($video_path, \fopen($video, 'r+'));
+            //Storage::disk('s3')->put($video_path, \fopen($video, 'r+'));
+            $s3 = AWS::createClient('s3');
+            $uploader = new MultipartUploader($s3, $video, [
+                'bucket' => env('AWS_BUCKET'),
+                'key' => $video_path,
+                ]);
         }
-        $save_data = [
-            'content_link' => ($video_path) ?? '',
-            'format' => ($video_extension) ?? '',
-            'duration' => ($duration) ?? '',
-            'updated_by' => Auth::id(),
-        ];
-        // dd($save_data);
-        $content = Content::whereId($id)->update($save_data);
-        //dd($save_data['content_link']);
-        if ($content) {
-            return response()->json(['file' => $video_path]);
-            //return response()->json(array('file' => $content->content_link), 200);
-        } else {
-            return response()->json(['error' => 'File Not Uploaded']);
+        try {
+            $result = $uploader->upload();
+            $save_data = [
+                'content_link' => ($video_path) ?? '',
+                'format' => ($video_extension) ?? '',
+                'duration' => ($duration) ?? '',
+                'updated_by' => Auth::id(),
+            ];
+            // dd($save_data);
+            $content = Content::whereId($id)->update($save_data);
+            if ($content) {
+                return response()->json(['file' => $video_path]);
+                //return response()->json(array('file' => $content->content_link), 200);
+            } else {
+                return response()->json(['error' => 'File Not Uploaded']);
+            }
+        } catch (MultipartUploadException $e) {
+            //echo $e->getMessage() . "\n";
+            return response()->json(['errors' => $e->getMessage()]);
         }
+        
+        
     }
     /**
      * Show the form for creating a new resource.
@@ -336,7 +353,7 @@ class ContentController extends Controller
         $validationData = $request->validate(
             [
                 'name' => ['required', 'string', 'max:255'],
-                'videofile' => ['required', 'mimes:mpeg,ogg,mp4,webm,3gp,mov,flv,avi,wmv,ts', 'max:' . config('constants.MAX_TEASER_UPLOAD_SIZE'), new FilenameRule],
+                'videofile' => ['required', 'mimetypes:'.Settings::VIDEO_MIMETYPES, 'max:' . config('constants.MAX_TEASER_UPLOAD_SIZE')],
                 'description' => ['required', 'string'],
             ]
         );
@@ -348,23 +365,42 @@ class ContentController extends Controller
             //$duration = Settings::getDuration($video);
             $video_path = 'teasers/' . $video_name;
             //Storage::disk('s3')->put($video_path, file_get_contents($video));
-            Storage::disk('s3')->put($video_path, \fopen($video, 'r+'));
+            //Storage::disk('s3')->put($video_path, \fopen($video, 'r+'));
+            $s3 = AWS::createClient('s3');
+            // $s3->putObject(array(
+            //     'Bucket'     => env('AWS_BUCKET'),
+            //     'Key'        => $video_path,
+            //     'SourceFile' => $video,
+            // ));
+            $uploader = new MultipartUploader($s3, $video, [
+                'bucket' => env('AWS_BUCKET'),
+                'key' => $video_path,
+                ]);
+                try {
+                    $result = $uploader->upload();
+                    $save_data = [
+                        'name' => $request->name,
+                        'link' => $video_path,
+                        'content_id' => $id,
+                        'description' => $request->description,
+                        'created_by' => Auth::id(),
+                        'updated_by' => Auth::id()
+                    ];
+                    //dd($save_data);
+                    $teaser = Teaser::create($save_data);
+                    if ($teaser) {
+                        return redirect('client/contents/view/' . $id)->with('success', "Teaser Added Successfully.");
+                    } else {
+                        return redirect('client/contents/teaseradd/')->with('failure', "Oops! Teaser Not added.");
+                    }
+                    
+                } catch (MultipartUploadException $e) {
+                    //echo $e->getMessage() . "\n";
+                    //return response()->json(['errors' => $e->getMessage()]);
+                    return redirect('client/contents/teaseradd/')->with('failure', "Oops! Teaser Not added.");
+                }
         }
-        $save_data = [
-            'name' => $request->name,
-            'link' => $video_path,
-            'content_id' => $id,
-            'description' => $request->description,
-            'created_by' => Auth::id(),
-            'updated_by' => Auth::id()
-        ];
-        //dd($save_data);
-        $teaser = Teaser::create($save_data);
-        if ($teaser) {
-            return redirect('client/contents/view/' . $id)->with('success', "Teaser Added Successfully.");
-        } else {
-            return redirect('client/contents/view/' . $id)->with('failure', "Oops! Teaser Not added.");
-        }
+        
     }
 
     public function teaser_status($id)
