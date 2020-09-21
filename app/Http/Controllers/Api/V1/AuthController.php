@@ -129,7 +129,8 @@ class AuthController extends ApiController
     public function me()
     {
         $user = auth('api')->user();
-        $client = Client::where(['email' => $user->email, 'phone' => $user->mobile])->first();
+        //$client = Client::where(['email' => $user->email, 'phone' => $user->mobile])->first();
+        $client = Client::where(['email' => $user->email])->first();
         if ($client && $client->parent_id == null) {
             $client_details['client_id'] = $client->id;
             $client_details['user_type'] = 'Client';
