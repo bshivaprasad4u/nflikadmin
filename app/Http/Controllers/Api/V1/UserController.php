@@ -93,6 +93,6 @@ class UserController extends ApiController
             Storage::disk('s3')->put($file_path, \fopen($file, 'r+'));
         }
         auth()->user()->update(['profile_image' => $file_path]);
-        return $this->respondWithMessage('Profile Picture Changed successfully.');
+        return $this->respondWithMessage(Storage::disk('s3')->url($file_path));
     }
 }

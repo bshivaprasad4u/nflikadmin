@@ -8,6 +8,7 @@ use App\User;
 use App\Client;
 use App\Notifications\SendOtpNotification;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 //use Jenssegers\Agent\Agent;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Settings;
@@ -129,6 +130,10 @@ class AuthController extends ApiController
     public function me()
     {
         $user = auth('api')->user();
+        if($user['profile_image'] != ''){
+            $user['profile_image_url'] = Storage::disk('s3')->url($user['profile_image']);
+        }
+        
         //$client = Client::where(['email' => $user->email, 'phone' => $user->mobile])->first();
         $client = Client::where(['email' => $user->email])->first();
         if ($client && $client->parent_id == null) {
